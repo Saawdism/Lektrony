@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Services · LEKTrony</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper:    #f7f3e8;
+    --paper-2:  #f1ecdd;
+    --surface:  #fbf8f0;
+    --surface-2:#fefcf6;
+    --ink:      #1a1814;
+    --ink-2:    #45413a;
+    --ink-3:    #757065;
+    --muted:    #aaa498;
+    --line:     #e9e3d1;
+    --line-2:   #f0ebd9;
+    --accent:   #f5c84a;
+    --accent-2: #ffd84d;
+    --accent-soft: #fdf3c8;
+    --accent-glow: rgba(245, 200, 74, 0.14);
+    --primary:  #1a1814;
+    --primary-fg: #fbf8f0;
+    --danger:   #b94a3a;
+    --ok:       #5f8c5a;
+    --radius:   8px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 2px rgba(26,24,20,0.03), 0 0 0 1px var(--line);
+    --shadow-md: 0 1px 2px rgba(26,24,20,0.03), 0 12px 32px rgba(26,24,20,0.05), 0 0 0 1px var(--line);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { background: var(--paper); }
+  body {
+    color: var(--ink);
+    font-family: 'Sora', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(ellipse 1100px 700px at 100% -10%, rgba(245, 200, 74, 0.18), transparent 55%),
+      radial-gradient(ellipse 900px 500px at -5% 25%, rgba(245, 200, 74, 0.08), transparent 50%),
+      radial-gradient(ellipse 800px 600px at 105% 110%, rgba(245, 200, 74, 0.10), transparent 55%);
+    background-attachment: fixed;
+    position: relative;
+    min-height: 100vh;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='ng'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1  0 0 0 0 0.08  0 0 0 0 0.05  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(#ng)'/></svg>");
+    background-size: 220px 220px;
+    opacity: 0.32;
+    mix-blend-mode: multiply;
+  }
+  h1, h2, h3, h4, h5 { margin: 0; font-weight: 500; letter-spacing: -0.022em; line-height: 1.1; }
+  p { margin: 0; }
+  button { font: inherit; cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+  ul, ol { margin: 0; padding: 0; list-style: none; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .anno { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-3); letter-spacing: 0.02em; text-transform: uppercase; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    border: 1px solid var(--ink);
+    background: var(--ink); color: var(--primary-fg);
+    padding: 9px 14px;
+    border-radius: var(--radius);
+    font-size: 13.5px; font-weight: 500;
+    transition: transform .06s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
+    white-space: nowrap;
+  }
+  .btn:hover { background: #2a2a26; }
+  .btn:active { transform: translateY(1px); }
+  .btn.ghost   { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn.ghost:hover { background: var(--paper-2); border-color: var(--ink); }
+  .btn.sm { padding: 6px 10px; font-size: 12.5px; border-radius: 5px; gap: 4px; }
+  .btn.lg { padding: 12px 18px; font-size: 14.5px; }
+  .btn.full { width: 100%; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 16px 7px 14px;
+    border: 1px solid rgba(245, 200, 74, 0.45);
+    background: rgba(253, 243, 200, 0.4);
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--ink-2);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .eyebrow .spark { width: 12px; height: 12px; color: var(--accent); display: inline-flex; }
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--ink-3); }
+  .dot-live { background: var(--accent); position: relative; }
+  .dot-live::after {
+    content: ""; position: absolute; inset: -4px;
+    border-radius: 50%; background: var(--accent); opacity: 0.32;
+    animation: pulse 2.2s ease-out infinite;
+  }
+  @keyframes pulse { 0%{transform:scale(1);opacity:.32} 70%{transform:scale(2.4);opacity:0} 100%{transform:scale(2.4);opacity:0} }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 60;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 32px;
+    background: rgba(247, 243, 232, 0.82);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-left, .nav-right { display: flex; align-items: center; gap: 18px; }
+  .logo { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+  .logomark { color: var(--ink); display: inline-flex; }
+  .region { padding: 1px 6px; border: 1px solid var(--line); border-radius: 4px; }
+  .navlinks { display: flex; gap: 4px; }
+  .navlinks a {
+    padding: 6px 10px;
+    font-size: 13.5px; color: var(--ink-2);
+    border-radius: 5px;
+  }
+  .navlinks a:hover { background: var(--paper-2); color: var(--ink); }
+  .navlinks a.active { color: var(--ink); background: var(--accent-soft); }
+
+  /* ---------- Shell ---------- */
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 2; }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 72px 0 44px; max-width: 880px; }
+  .hero h1 {
+    font-size: clamp(38px, 5.4vw, 64px);
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    line-height: 1.04;
+    margin-top: 24px;
+    max-width: 16ch;
+  }
+  .hero .sub {
+    font-size: clamp(18px, 2vw, 23px);
+    color: var(--ink-2);
+    font-weight: 300;
+    margin-top: 20px;
+    max-width: 46ch;
+    line-height: 1.4;
+  }
+  .hero .support {
+    font-size: 15px; color: var(--ink-3); line-height: 1.6;
+    margin-top: 22px; max-width: 60ch;
+  }
+  .hero-cta { display: flex; gap: 10px; margin-top: 30px; flex-wrap: wrap; }
+
+  /* ---------- Section frame ---------- */
+  .section { padding: 30px 0 8px; }
+  .sec-head { margin-bottom: 26px; }
+  .sec-tag { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .sec-tag .num { padding: 2px 8px; border: 1px solid var(--line); border-radius: 4px; background: var(--paper); font-size: 11px; color: var(--ink-3); }
+  .sec-title { font-size: clamp(26px, 3vw, 38px); letter-spacing: -0.022em; font-weight: 500; line-height: 1.08; max-width: 24ch; }
+  .sec-sub { font-size: 16px; color: var(--ink-2); margin-top: 12px; max-width: 60ch; line-height: 1.5; }
+
+  /* ---------- Tabs ---------- */
+  .tabs {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin: 6px 0 28px;
+    position: sticky; top: 64px; z-index: 40;
+    padding: 12px 0;
+    background: linear-gradient(var(--paper) 70%, transparent);
+  }
+  .tab {
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 999px;
+    font-size: 13px; color: var(--ink-2);
+    transition: all 0.15s ease;
+  }
+  .tab:hover { border-color: var(--ink-3); color: var(--ink); }
+  .tab.on { background: var(--ink); color: var(--primary-fg); border-color: var(--ink); }
+  .tab .cnt { font-family: 'JetBrains Mono', monospace; font-size: 11px; opacity: 0.6; margin-left: 5px; }
+
+  /* ---------- Product grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .pcard {
+    position: relative;
+    display: flex; flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 22px 22px 18px;
+    box-shadow: 0 1px 2px rgba(26,24,20,0.02), 0 14px 40px -28px rgba(26,24,20,0.18);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  }
+  .pcard:hover { transform: translateY(-3px); box-shadow: 0 1px 2px rgba(26,24,20,0.02), 0 22px 50px -28px rgba(26,24,20,0.28); border-color: var(--ink-3); }
+  .pcard.sel { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink), 0 18px 44px -26px rgba(26,24,20,0.3); }
+  .pcard.hidden { display: none; }
+
+  .pcard-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .pcard-tag {
+    width: 40px; height: 40px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 9px;
+    font-size: 13px; font-weight: 500; color: var(--ink-2); letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+  .pcard.sel .pcard-tag, .pcard.popular .pcard-tag { background: var(--ink); color: var(--accent); border-color: var(--ink); }
+  .pcard-price { text-align: right; line-height: 1.05; }
+  .pcard-price .amt { font-size: 20px; font-weight: 500; letter-spacing: -0.02em; display: block; }
+  .pcard-price .per { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--ink-3); }
+
+  .pcard-badge {
+    position: absolute; top: -10px; left: 20px;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px;
+    background: var(--accent); color: var(--ink);
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(245,200,74,0.4);
+  }
+
+  .pcard-name { font-size: 19px; font-weight: 500; margin-top: 16px; letter-spacing: -0.015em; }
+  .pcard-desc { font-size: 14px; color: var(--ink-2); line-height: 1.5; margin-top: 8px; }
+
+  .pcard-block { margin-top: 16px; }
+  .pcard-block .anno { display: block; margin-bottom: 7px; color: var(--muted); }
+  .chiplist { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chiplist li { padding: 3px 9px; background: var(--paper-2); border-radius: 5px; font-size: 12px; color: var(--ink-2); }
+  .pcard-best p { font-size: 13px; color: var(--ink-3); line-height: 1.45; }
+
+  .pcard-foot { margin-top: auto; padding-top: 18px; }
+  .pcard-setup { display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 10px; }
+  .pcard-setup a { border-bottom: 1px solid var(--line); color: var(--ink-3); }
+  .add-btn {
+    width: 100%;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    border: 1px solid var(--ink); background: transparent; color: var(--ink);
+    padding: 10px 14px; border-radius: var(--radius);
+    font-size: 13.5px; font-weight: 500;
+    transition: all 0.14s ease;
+  }
+  .add-btn:hover { background: var(--paper-2); }
+  .pcard.sel .add-btn { background: var(--ink); color: var(--primary-fg); }
+  .add-btn .ck { display: none; }
+  .pcard.sel .add-btn .ck { display: inline-flex; }
+  .pcard.sel .add-btn .plus { display: none; }
+
+  .showall-wrap { display: flex; justify-content: center; margin-top: 26px; }
+
+  /* ---------- Bundles ---------- */
+  .bundles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .bundle {
+    position: relative;
+    display: flex; flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 24px 22px;
+    box-shadow: 0 1px 2px rgba(26,24,20,0.02), 0 14px 40px -28px rgba(26,24,20,0.18);
+  }
+  .bundle.rec { border-color: var(--ink); background: var(--surface-2); box-shadow: 0 0 0 1px var(--ink), 0 24px 50px -26px rgba(26,24,20,0.32); }
+  .bundle-badge {
+    position: absolute; top: -11px; left: 22px;
+    padding: 4px 11px;
+    background: var(--accent); color: var(--ink);
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    box-shadow: 0 4px 12px rgba(245,200,74,0.4);
+  }
+  .bundle-name { font-size: 17px; font-weight: 500; }
+  .bundle-price { margin-top: 12px; line-height: 1.05; }
+  .bundle-price .amt { font-size: 26px; font-weight: 500; letter-spacing: -0.025em; }
+  .bundle-price .per { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-3); margin-left: 4px; }
+  .bundle-incl { margin-top: 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .bundle-incl li { display: grid; grid-template-columns: 16px 1fr; gap: 8px; font-size: 13.5px; color: var(--ink-2); align-items: start; }
+  .bundle-incl .ic { color: var(--ok); margin-top: 2px; }
+  .bundle-best { font-size: 12.5px; color: var(--ink-3); margin-top: 16px; line-height: 1.45; padding-top: 14px; border-top: 1px solid var(--line); }
+  .bundle .btn { margin-top: 16px; }
+
+  /* ---------- Calm callouts ---------- */
+  .note {
+    margin-top: 18px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 28px 30px;
+  }
+  .note-head { display: flex; align-items: center; gap: 10px; }
+  .note-head .anno { color: var(--ink-2); font-size: 12px; white-space: nowrap; }
+  .note p { font-size: 15px; color: var(--ink-2); line-height: 1.55; margin-top: 8px; max-width: 70ch; }
+  .setup-rows { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 20px; }
+  .setup-row {
+    flex: 1; min-width: 200px;
+    border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--paper); padding: 14px 16px;
+  }
+  .setup-row b { display: block; font-size: 14px; font-weight: 500; }
+  .setup-row .amt { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--ink); margin-top: 4px; display: block; }
+
+  /* ---------- Start with one ---------- */
+  .startone {
+    margin-top: 40px;
+    display: grid; grid-template-columns: 200px 1fr; gap: 40px;
+    align-items: start;
+    padding: 40px 0;
+    border-top: 1px solid var(--line);
+  }
+  .startone .big { font-size: clamp(40px, 6vw, 72px); font-weight: 300; letter-spacing: -0.04em; line-height: 0.95; color: var(--ink); }
+  .startone .big .one { color: var(--accent); }
+  .startone h3 { font-size: 24px; font-weight: 500; letter-spacing: -0.02em; }
+  .startone p { font-size: 16px; color: var(--ink-2); line-height: 1.6; margin-top: 12px; max-width: 60ch; }
+
+  /* ---------- Final CTA ---------- */
+  .final {
+    margin: 56px 0 0;
+    background: var(--ink); color: var(--paper);
+    border-radius: var(--radius-lg);
+    padding: 64px 56px;
+    position: relative; overflow: hidden;
+  }
+  .final::after {
+    content: ""; position: absolute; top: -160px; right: -120px;
+    width: 420px; height: 420px;
+    background: radial-gradient(circle at 50% 50%, rgba(245,200,74,0.18) 0%, transparent 68%);
+    pointer-events: none;
+  }
+  .final-in { position: relative; z-index: 1; max-width: 640px; }
+  .final .eyebrow { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); color: var(--paper); }
+  .final h2 { font-size: clamp(30px, 3.6vw, 46px); color: var(--paper); margin-top: 18px; letter-spacing: -0.025em; font-weight: 500; line-height: 1.05; max-width: 18ch; }
+  .final p { color: rgba(255,255,255,0.65); margin-top: 14px; max-width: 48ch; font-size: 16px; }
+  .final-cta { display: flex; gap: 10px; margin-top: 26px; flex-wrap: wrap; }
+  .final .btn.primary { background: var(--accent); color: var(--ink); border-color: var(--accent); }
+  .final .btn.primary:hover { background: #ffce2a; }
+  .final .btn.ghost { background: transparent; color: var(--paper); border-color: rgba(255,255,255,0.2); }
+  .final .btn.ghost:hover { background: rgba(255,255,255,0.08); border-color: var(--paper); }
+
+  /* ---------- Footer ---------- */
+  .footer { max-width: 1240px; margin: 0 auto; padding: 32px 28px 120px; border-top: 1px solid var(--line); margin-top: 48px; position: relative; z-index: 2; }
+  .footer-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; flex-wrap: wrap; gap: 14px; }
+  .footer-row.faint { color: var(--ink-3); }
+  .footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
+  .footer-links a { color: var(--ink-2); font-size: 13.5px; }
+  .footer-links a:hover { color: var(--ink); }
+
+  /* ---------- Sticky plan bar ---------- */
+  .planbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
+    transform: translateY(120%);
+    transition: transform 0.28s cubic-bezier(.2,.7,.2,1);
+    padding: 14px 28px calc(14px + env(safe-area-inset-bottom, 0px));
+    background: rgba(26,24,20,0.96);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .planbar.show { transform: translateY(0); }
+  .planbar-in { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+  .planbar-left { display: flex; align-items: center; gap: 18px; min-width: 0; }
+  .planbar .count { display: inline-flex; align-items: center; gap: 8px; color: var(--paper); font-size: 14px; }
+  .planbar .count b { font-weight: 600; }
+  .planbar .names { color: rgba(255,255,255,0.5); font-size: 12.5px; font-family: 'JetBrains Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 42vw; }
+  .planbar-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  .planbar .total { text-align: right; line-height: 1; color: var(--paper); }
+  .planbar .total .amt { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+  .planbar .total .per { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.5); }
+  .planbar .btn.primary { background: var(--accent); color: var(--ink); border-color: var(--accent); }
+  .planbar .btn.primary:hover { background: #ffce2a; }
+  .planbar .clear { background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 12px; padding: 4px; }
+  .planbar .clear:hover { color: var(--paper); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 980px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .bundles { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .nav { padding: 12px 16px; }
+    .navlinks { display: none; }
+    .wrap { padding: 0 16px; }
+    .hero { padding: 44px 0 28px; }
+    .tabs { top: 60px; }
+    .grid { grid-template-columns: 1fr; }
+    .bundles { grid-template-columns: 1fr; }
+    .startone { grid-template-columns: 1fr; gap: 16px; padding: 28px 0; }
+    .final { padding: 40px 26px; }
+    .footer { padding: 28px 16px 130px; }
+    .planbar { padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+    .planbar .names { display: none; }
+    .planbar .total .per { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-left">
+    <a class="logo" href="index.html">
+      <span class="logomark" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect x="2" y="2" width="11" height="11" rx="2" fill="currentColor" />
+          <rect x="15" y="2" width="11" height="11" rx="2" fill="#ffd84d" />
+          <rect x="2" y="15" width="11" height="11" rx="2" fill="currentColor" />
+          <rect x="15" y="15" width="11" height="11" rx="2" fill="currentColor" />
+        </svg>
+      </span>
+      <span class="logo-text">LEKTrony</span>
+      <span class="region anno">UAE</span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">How it works</a>
+      <a href="index.html">Integrations</a>
+      <a href="services.html" class="active">Services</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a class="btn ghost sm" href="index.html">WhatsApp us</a>
+    <a class="btn sm" href="index.html">Book a call</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero" data-screen-label="Hero">
+    <div class="eyebrow"><span class="spark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg></span><span>AI Employees · Monthly plans</span></div>
+    <h1>AI employees for every part of your business</h1>
+    <p class="sub">Choose the AI tools your business needs today. Start with one, then add more as your operations grow.</p>
+    <p class="support">Built for UAE businesses using WhatsApp, Instagram, calendars, spreadsheets, payment links, and daily operational workflows.</p>
+    <div class="hero-cta">
+      <a class="btn lg" href="index.html">Build my AI team</a>
+      <a class="btn ghost lg" href="index.html">Book a consultation</a>
+    </div>
+  </header>
+
+  <!-- PRODUCT GRID -->
+  <section class="section" data-screen-label="AI employees grid">
+    <div class="sec-head">
+      <div class="sec-tag"><span class="mono num">01</span><span class="anno">The roster</span></div>
+      <h2 class="sec-title">Hire one role at a time.</h2>
+      <p class="sec-sub">Each AI employee takes over one function and runs it around the clock. Pick by department, or add the ones that fit.</p>
+    </div>
+
+    <div class="tabs" id="tabs"></div>
+    <div class="grid" id="grid"></div>
+    <div class="showall-wrap" id="showallWrap">
+      <button class="btn ghost lg" id="showall">Show all AI employees</button>
+    </div>
+  </section>
+
+  <!-- BUNDLES -->
+  <section class="section" data-screen-label="Bundles" style="margin-top:40px;">
+    <div class="sec-head">
+      <div class="sec-tag"><span class="mono num">02</span><span class="anno">Pre-built teams</span></div>
+      <h2 class="sec-title">Or start with a ready-made team.</h2>
+      <p class="sec-sub">Common combinations, bundled at a lower monthly rate than hiring each role on its own.</p>
+    </div>
+    <div class="bundles" id="bundles"></div>
+  </section>
+
+  <!-- SETUP NOTE -->
+  <section class="section" data-screen-label="Setup">
+    <div class="note">
+      <div class="note-head"><span class="dot dot-live"></span><span class="anno">One-time setup</span></div>
+      <p>Most AI employees require a one-time setup depending on integrations, workflows, and business rules. We confirm this with you after the first consultation — no surprises.</p>
+      <div class="setup-rows">
+        <div class="setup-row"><b>Simple setup</b><span class="amt">AED 1,000 – 2,500</span></div>
+        <div class="setup-row"><b>Standard setup</b><span class="amt">AED 2,500 – 5,000</span></div>
+        <div class="setup-row"><b>Advanced setup</b><span class="amt">Custom</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- START WITH ONE -->
+  <section class="startone" data-screen-label="Start with one">
+    <div class="big">Start with <span class="one">one</span>.</div>
+    <div>
+      <h3>You don't need a full transformation on day one.</h3>
+      <p>Most clients start with a single AI employee — usually customer replies, bookings, or sales follow-up. Once it proves useful, we add the next role. Calm, deliberate, one hire at a time.</p>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final" data-screen-label="Final CTA">
+    <div class="final-in">
+      <div class="eyebrow"><span class="dot dot-live"></span><span>When you're ready</span></div>
+      <h2>Not sure which AI employee you need first?</h2>
+      <p>Tell us about your business and we'll map the first AI role worth building — in a short conversation, no slides.</p>
+      <div class="final-cta">
+        <a class="btn primary lg" href="index.html">Build my AI team</a>
+        <a class="btn ghost lg" href="index.html">WhatsApp us</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-row">
+    <a class="logo" href="index.html">
+      <span class="logomark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+          <rect x="2" y="2" width="11" height="11" rx="2" fill="currentColor" />
+          <rect x="15" y="2" width="11" height="11" rx="2" fill="#ffd84d" />
+          <rect x="2" y="15" width="11" height="11" rx="2" fill="currentColor" />
+          <rect x="15" y="15" width="11" height="11" rx="2" fill="currentColor" />
+        </svg>
+      </span>
+      <span>LEKTrony · AI operations · Abu Dhabi</span>
+    </a>
+    <nav class="footer-links">
+      <a href="index.html">Solutions</a>
+      <a href="index.html">How it works</a>
+      <a href="services.html">Services</a>
+      <a href="index.html">Contact</a>
+    </nav>
+  </div>
+  <div class="footer-row faint">
+    <span class="anno">© 2026 · Privacy · Terms</span>
+    <span class="anno">MADE IN ABU DHABI · SERVING THE UAE &amp; GCC</span>
+  </div>
+</footer>
+
+<!-- STICKY PLAN BAR -->
+<div class="planbar" id="planbar" aria-live="polite">
+  <div class="planbar-in">
+    <div class="planbar-left">
+      <span class="count"><span class="dot dot-live"></span><b id="pbCount">0</b>&nbsp;AI employees in your plan</span>
+      <span class="names mono" id="pbNames"></span>
+    </div>
+    <div class="planbar-right">
+      <div class="total"><span class="amt" id="pbTotal">AED 0</span> <span class="per">/month</span></div>
+      <button class="clear" id="pbClear">Clear</button>
+      <a class="btn primary" href="index.html" id="pbContinue">Review my plan →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ----- Data ----- */
+  var CATS = [
+    { id: 'all',   label: 'All' },
+    { id: 'comm',  label: 'Customer Communication' },
+    { id: 'sales', label: 'Sales & Payments' },
+    { id: 'ops',   label: 'Operations & Reporting' },
+    { id: 'admin', label: 'Admin & Documents' },
+    { id: 'ent',   label: 'Enterprise' }
+  ];
+
+  var EMPLOYEES = [
+    { id: 'receptionist', tag: 'RC', cat: 'comm', price: 299, popular: true,
+      name: 'AI Receptionist',
+      desc: 'Handles WhatsApp and Instagram inquiries, answers FAQs, captures customer details, and routes serious leads to the business owner.',
+      handles: ['WhatsApp replies', 'Instagram DMs', 'FAQs', 'lead capture', 'handoff to staff'],
+      best: 'Salons, clinics, restaurants, fitness studios, real estate brokers.' },
+    { id: 'booking', tag: 'BK', cat: 'comm', price: 249,
+      name: 'AI Booking Assistant',
+      desc: 'Manages bookings, appointment confirmations, rescheduling, reminders, and basic waitlist logic.',
+      handles: ['bookings', 'calendar checks', 'reminders', 'rescheduling', 'no-show reduction'],
+      best: 'Salons, clinics, restaurants, gyms, classes.' },
+    { id: 'sales', tag: 'SL', cat: 'sales', price: 399,
+      name: 'AI Sales Assistant',
+      desc: 'Responds to product questions, recommends items or services, follows up with leads, and sends payment links.',
+      handles: ['product questions', 'recommendations', 'lead follow-up', 'payment links', 'order summaries'],
+      best: 'Instagram businesses, ecommerce stores, retail sellers, service providers.' },
+    { id: 'crm', tag: 'CR', cat: 'sales', price: 299,
+      name: 'AI CRM Assistant',
+      desc: 'Creates customer profiles, logs interactions, updates customer records, and reminds the team who needs follow-up.',
+      handles: ['customer records', 'interaction logs', 'follow-up reminders', 'lead status updates'],
+      best: 'Any business that loses track of customers in WhatsApp, Excel, or scattered notes.' },
+    { id: 'dashboard', tag: 'DB', cat: 'ops', price: 399,
+      name: 'AI Dashboard Builder',
+      desc: 'Turns spreadsheets, sales data, bookings, or operations data into simple dashboards for owners and managers.',
+      handles: ['management dashboards', 'weekly KPIs', 'spreadsheet cleanup', 'simple visual reports'],
+      best: 'Restaurants, retail, clinics, trading companies, service businesses.' },
+    { id: 'reporting', tag: 'RP', cat: 'ops', price: 299,
+      name: 'AI Reporting Analyst',
+      desc: 'Generates daily, weekly, or monthly operational summaries from business data and sends them to management.',
+      handles: ['daily summaries', 'weekly reports', 'KPI commentary', 'management updates'],
+      best: 'Owners and managers who want visibility without manually preparing reports.' },
+    { id: 'contracting', tag: 'CT', cat: 'admin', price: 399,
+      name: 'AI Contracting Agent',
+      desc: 'Drafts, reviews, summarizes, and organizes contracts, quotations, proposals, and agreement templates.',
+      handles: ['contract drafts', 'proposal drafts', 'quotation templates', 'clause summaries', 'renewal reminders'],
+      best: 'Service businesses, agencies, real estate, suppliers, consultants.' },
+    { id: 'collections', tag: 'CL', cat: 'sales', price: 299,
+      name: 'AI Collections Assistant',
+      desc: 'Tracks unpaid invoices, sends polite payment reminders, and updates the owner when customers pay or delay.',
+      handles: ['payment reminders', 'overdue follow-ups', 'invoice tracking', 'payment status updates'],
+      best: 'Service providers, suppliers, clinics, studios, agencies.' },
+    { id: 'marketing', tag: 'MK', cat: 'comm', price: 249,
+      name: 'AI Marketing Assistant',
+      desc: 'Creates simple campaigns, captions, WhatsApp broadcast messages, and promotion ideas based on the business offering.',
+      handles: ['captions', 'campaign ideas', 'WhatsApp broadcasts', 'promotion messages', 'content calendar ideas'],
+      best: 'Instagram businesses, restaurants, salons, clinics, gyms.' },
+    { id: 'operations', tag: 'OP', cat: 'ops', price: 399,
+      name: 'AI Operations Assistant',
+      desc: 'Tracks internal tasks, follows up with staff, sends reminders, and gives the owner a simple daily operations update.',
+      handles: ['task tracking', 'staff reminders', 'escalation alerts', 'daily operations updates'],
+      best: 'Businesses with multiple staff, branches, suppliers, or repeated daily tasks.' },
+    { id: 'hr', tag: 'HR', cat: 'admin', price: 249,
+      name: 'AI HR Assistant',
+      desc: 'Answers staff questions, supports onboarding, tracks leave requests, and helps organize internal policies.',
+      handles: ['staff FAQs', 'onboarding checklists', 'leave requests', 'policy guidance'],
+      best: 'Growing SMEs with staff but no dedicated HR team.' },
+    { id: 'compliance', tag: 'CP', cat: 'ent', price: 999,
+      name: 'AI Compliance Assistant',
+      desc: 'Helps teams search policies, summarize procedures, prepare control checklists, and support internal review work.',
+      handles: ['policy search', 'procedure summaries', 'checklist generation', 'internal control support', 'review preparation'],
+      best: 'Regulated businesses, financial services, compliance teams, enterprise functions.' }
+  ];
+
+  var BUNDLES = [
+    { name: 'Starter AI Team', price: 'AED 499', per: '/month',
+      incl: ['AI Receptionist', 'AI Booking Assistant'],
+      ids: ['receptionist','booking'],
+      best: 'Small businesses starting with customer communication.' },
+    { name: 'Growth AI Team', price: 'AED 899', per: '/month', rec: true,
+      incl: ['AI Receptionist', 'AI Sales Assistant', 'AI CRM Assistant'],
+      ids: ['receptionist','sales','crm'],
+      best: 'Businesses handling active leads, customers, and follow-ups.' },
+    { name: 'Operations AI Team', price: 'AED 1,299', per: '/month',
+      incl: ['AI Dashboard Builder', 'AI Reporting Analyst', 'AI Operations Assistant'],
+      ids: ['dashboard','reporting','operations'],
+      best: 'Owners who want visibility and control over daily operations.' },
+    { name: 'Enterprise AI Team', price: 'Custom', per: '',
+      incl: ['AI Compliance Assistant', 'AI Contracting Agent', 'AI Dashboard Builder', 'Custom workflows'],
+      ids: ['compliance','contracting','dashboard'],
+      best: 'Regulated or larger businesses with more complex requirements.' }
+  ];
+
+  var INITIAL_VISIBLE = 6;
+  var state = { cat: 'all', showAll: false, selected: {} };
+
+  /* ----- Render tabs ----- */
+  function renderTabs() {
+    var html = '';
+    CATS.forEach(function(c) {
+      var n = c.id === 'all' ? EMPLOYEES.length : EMPLOYEES.filter(function(e){return e.cat===c.id;}).length;
+      html += '<button class="tab' + (state.cat===c.id?' on':'') + '" data-cat="' + c.id + '">' + c.label + '<span class="cnt">' + n + '</span></button>';
+    });
+    document.getElementById('tabs').innerHTML = html;
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function(t){
+      t.addEventListener('click', function(){ state.cat = t.getAttribute('data-cat'); state.showAll = (state.cat !== 'all'); renderGrid(); renderTabs(); });
+    });
+  }
+
+  /* ----- Render grid ----- */
+  function cardHTML(e) {
+    var handles = e.handles.map(function(h){ return '<li>' + h + '</li>'; }).join('');
+    var sel = state.selected[e.id];
+    var badge = e.popular ? '<span class="pcard-badge"><span class="dot dot-live" style="width:5px;height:5px;background:#1a1814"></span>Popular first hire</span>' : '';
+    return '<article class="pcard' + (e.popular?' popular':'') + (sel?' sel':'') + '" data-id="' + e.id + '" data-cat="' + e.cat + '">' +
+      badge +
+      '<div class="pcard-top"><span class="pcard-tag mono">' + e.tag + '</span>' +
+      '<div class="pcard-price"><span class="amt">AED ' + e.price + '</span><span class="per">/month</span></div></div>' +
+      '<h3 class="pcard-name">' + e.name + '</h3>' +
+      '<p class="pcard-desc">' + e.desc + '</p>' +
+      '<div class="pcard-block pcard-handles"><span class="anno">Handles</span><ul class="chiplist">' + handles + '</ul></div>' +
+      '<div class="pcard-block pcard-best"><span class="anno">Best for</span><p>' + e.best + '</p></div>' +
+      '<div class="pcard-foot">' +
+      '<span class="pcard-setup">+ one-time setup · <a href="#setup">confirmed after consultation</a></span>' +
+      '<button class="add-btn" data-add="' + e.id + '">' +
+      '<span class="plus"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>' +
+      '<span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></span>' +
+      '<span class="add-label">' + (sel ? 'Added to plan' : 'Add to my plan') + '</span>' +
+      '</button></div>' +
+      '</article>';
+  }
+
+  function renderGrid() {
+    var list = EMPLOYEES.filter(function(e){ return state.cat === 'all' || e.cat === state.cat; });
+    var showWrap = document.getElementById('showallWrap');
+    var visible = list;
+    if (state.cat === 'all' && !state.showAll) {
+      visible = list.slice(0, INITIAL_VISIBLE);
+      showWrap.style.display = 'flex';
+      document.getElementById('showall').textContent = 'Show all AI employees (' + (list.length - INITIAL_VISIBLE) + ' more)';
+    } else {
+      showWrap.style.display = 'none';
+    }
+    document.getElementById('grid').innerHTML = visible.map(cardHTML).join('');
+    bindAdds();
+  }
+
+  function bindAdds() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-add]'), function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-add');
+        if (state.selected[id]) { delete state.selected[id]; } else { state.selected[id] = true; }
+        renderGrid();
+        renderBar();
+      });
+    });
+  }
+
+  /* ----- Bundles ----- */
+  function renderBundles() {
+    document.getElementById('bundles').innerHTML = BUNDLES.map(function(b){
+      var incl = b.incl.map(function(i){ return '<li><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></span>' + i + '</li>'; }).join('');
+      var perPart = b.per ? ' <span class="per">' + b.per + '</span>' : '';
+      return '<article class="bundle' + (b.rec?' rec':'') + '">' +
+        (b.rec ? '<span class="bundle-badge">Recommended</span>' : '') +
+        '<h3 class="bundle-name">' + b.name + '</h3>' +
+        '<div class="bundle-price"><span class="amt">' + b.price + '</span>' + perPart + '</div>' +
+        '<ul class="bundle-incl">' + incl + '</ul>' +
+        '<p class="bundle-best">' + b.best + '</p>' +
+        '<button class="btn ' + (b.rec?'':'ghost') + ' full" data-bundle="' + b.ids.join(',') + '">Start with this team</button>' +
+        '</article>';
+    }).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-bundle]'), function(btn){
+      btn.addEventListener('click', function(){
+        var ids = btn.getAttribute('data-bundle').split(',');
+        state.selected = {};
+        ids.forEach(function(id){ state.selected[id] = true; });
+        state.cat = 'all'; state.showAll = true;
+        renderGrid(); renderTabs(); renderBar();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  }
+
+  /* ----- Plan bar ----- */
+  function renderBar() {
+    var ids = Object.keys(state.selected);
+    var bar = document.getElementById('planbar');
+    if (!ids.length) { bar.classList.remove('show'); return; }
+    var chosen = EMPLOYEES.filter(function(e){ return state.selected[e.id]; });
+    var total = chosen.reduce(function(s,e){ return s + e.price; }, 0);
+    document.getElementById('pbCount').textContent = chosen.length;
+    document.getElementById('pbNames').textContent = chosen.map(function(e){ return e.name.replace('AI ',''); }).join('  ·  ');
+    document.getElementById('pbTotal').textContent = 'AED ' + total.toLocaleString('en-US');
+    bar.classList.add('show');
+  }
+
+  document.getElementById('showall').addEventListener('click', function(){ state.showAll = true; renderGrid(); });
+  document.getElementById('pbClear').addEventListener('click', function(){ state.selected = {}; renderGrid(); renderBar(); });
+
+  renderTabs();
+  renderGrid();
+  renderBundles();
+  renderBar();
+</script>
+
+</body>
+</html>
