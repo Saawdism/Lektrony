@@ -1046,16 +1046,17 @@
   /* ---------- Responsive ---------- */
   @media (max-width: 1100px) {
     .shell { grid-template-columns: 1fr; }
-    .rail-col { order: -1; }
-    .rail {
-      position: relative; top: auto;
-      max-height: none;
-    }
     .ai-team, .case-grid, .plans { grid-template-columns: 1fr; }
     .impact-grid { grid-template-columns: repeat(2, 1fr); }
     .cta-shell { grid-template-columns: 1fr; }
     .nav-progress { display: none; }
     .navlinks { display: none; }
+  }
+  @media (max-width: 1100px) {
+    .rail {
+      position: relative; top: auto;
+      max-height: none;
+    }
   }
   @media (max-width: 700px) {
     .nav { padding: 10px 16px; }
@@ -1063,7 +1064,7 @@
     .hero { padding: 28px 24px 0; }
     .hero-title { white-space: normal; font-size: clamp(36px, 10vw, 56px); letter-spacing: -0.035em; }
     .chat { margin: 0 -24px; }
-    .chat-scroll { padding: 20px 24px; max-height: 460px; }
+    .chat-scroll { padding: 20px 24px; max-height: none; overflow: visible; }
     .sec { padding: 32px 24px; }
     .impact-grid { grid-template-columns: 1fr; }
   }
@@ -1088,7 +1089,7 @@ window.INDUSTRY_LIST = [
   { id: 'restaurant', label: 'Restaurant',  hint: 'Dine-in, delivery, café' },
   { id: 'barbershop', label: 'Salon',       hint: 'Barbershop, beauty, spa' },
   { id: 'clinic',     label: 'Clinic',      hint: 'Dental, derm, GP, aesthetics' },
-  { id: 'ecommerce',  label: 'Online shop', hint: 'Shopify, marketplace' },
+  { id: 'ecommerce',  label: 'Online Business', hint: 'Instagram & WhatsApp sellers' },
   { id: 'realestate', label: 'Real estate', hint: 'Brokers, developers' },
   { id: 'fitness',    label: 'Fitness',     hint: 'Gym, studio, classes' },
 ];
@@ -1171,7 +1172,7 @@ window.INDUSTRIES = {
     workflowDefault: 'receptionist',
   },
   ecommerce: {
-    name: 'Online shop',
+    name: 'Online Business',
     blurb: 'Most UAE shoppers ask before they buy, on WhatsApp or Instagram. Reply fast or lose them.',
     pains: [
       { id: 'missed-msgs',  label: 'Instagram DMs piling up',   desc: 'Ads drive DMs you can\'t keep up with' },
@@ -1179,7 +1180,7 @@ window.INDUSTRIES = {
       { id: 'abandoned',    label: 'Abandoned baskets',         desc: 'Shoppers add to cart, then disappear' },
       { id: 'support',      label: 'Repeat customer questions', desc: '"Where\'s my order?" all day long' },
     ],
-    channels: ['whatsapp', 'instagram', 'web'],
+    channels: ['whatsapp', 'instagram'],
     automations: [
       { id: 'order-asst', role: 'AI assistant', title: 'AI shop assistant',
         what: 'Answers pre-purchase questions on WhatsApp & Instagram. Sizing, stock, delivery, prices. Closes the sale.',
@@ -1191,7 +1192,7 @@ window.INDUSTRIES = {
         what: 'Handles every "where is my order?" message automatically. Knows your couriers.',
         kpi: 'Cuts support workload by half' },
     ],
-    integrations: ['whatsapp', 'instagram', 'shopify', 'tabby', 'tamara', 'ziina'],
+    integrations: ['whatsapp', 'instagram', 'tabby', 'tamara', 'ziina'],
     benchmarks: { hours: 28, missedLeads: 140, replyMinutes: 90 },
     workflowDefault: 'order-asst',
   },
@@ -1251,7 +1252,6 @@ window.INDUSTRIES = {
 window.INTEGRATIONS = {
   whatsapp:    { label: 'WhatsApp Business', tag: 'WA', cat: 'Channels',     blurb: 'Where most UAE customers actually talk to you' },
   instagram:   { label: 'Instagram',         tag: 'IG', cat: 'Channels',     blurb: 'DMs, comments, and story replies' },
-  shopify:     { label: 'Shopify',           tag: 'SH', cat: 'Commerce',     blurb: 'Products, orders, customers' },
   sheets:      { label: 'Google Sheets',     tag: 'GS', cat: 'Operations',   blurb: 'Where your team already keeps the numbers' },
   gcal:        { label: 'Google Calendar',   tag: 'GC', cat: 'Operations',   blurb: 'Bookings, viewings, classes' },
   ziina:       { label: 'Ziina',             tag: 'ZI', cat: 'Payments',     blurb: 'Local payment links' },
@@ -1380,7 +1380,7 @@ const FLOWS = {
     nodes: [
     { id: 't', kind: 'trigger', tool: 'IG', label: 'Shopper DM', detail: '"do you have this in medium?"' },
     { id: 'p', kind: 'ai', tool: 'AI', label: 'Reads the question', detail: 'product · size · stock' },
-    { id: 'c', kind: 'tool', tool: 'SH', label: 'Checks the catalogue', detail: 'live inventory' },
+    { id: 'c', kind: 'tool', tool: 'WA', label: 'Checks the catalogue', detail: 'products · stock · price' },
     { id: 'r', kind: 'ai', tool: 'AI', label: 'Answers with a link', detail: 'product + checkout' },
     { id: 'p2', kind: 'tool', tool: 'TB', label: 'Offers pay in 4', detail: 'Tabby · Tamara · Ziina' }]
 
@@ -1394,7 +1394,37 @@ const FLOWS = {
     { id: 's', kind: 'logic', tool: '?', label: 'Hot lead?', detail: 'with summary + next action' },
     { id: 'n', kind: 'tool', tool: 'WA', label: 'Hands off to the broker', detail: 'one tap to take over' }]
 
+  },
+  'salon-book': {
+    label: 'Booking assistant',
+    nodes: [
+    { id: 't', kind: 'trigger', tool: 'WA', label: 'Client message', detail: '"haircut tomorrow at 5?"' },
+    { id: 'p', kind: 'ai', tool: 'AI', label: 'Understands the ask', detail: 'service · stylist · time' },
+    { id: 'c', kind: 'tool', tool: 'GC', label: 'Checks the calendar', detail: 'by stylist' },
+    { id: 'r', kind: 'ai', tool: 'AI', label: 'Confirms with the client', detail: 'in your salon tone' },
+    { id: 'l', kind: 'tool', tool: 'GS', label: 'Logs the booking', detail: 'client · service · notes' }]
+
+  },
+  'fitness-book': {
+    label: 'Class booking',
+    nodes: [
+    { id: 't', kind: 'trigger', tool: 'IG', label: 'Member message', detail: '"spot in Saturday\'s class?"' },
+    { id: 'p', kind: 'ai', tool: 'AI', label: 'Reads the request', detail: 'class · time · member' },
+    { id: 'c', kind: 'tool', tool: 'GC', label: 'Checks class capacity', detail: 'live spots left' },
+    { id: 'r', kind: 'ai', tool: 'AI', label: 'Books and confirms', detail: 'adds to the class list' },
+    { id: 'm', kind: 'tool', tool: 'WA', label: 'Sends a reminder', detail: 'the day before' }]
+
   }
+};
+
+/* Each industry gets a workflow that actually fits it. */
+const FLOWS_BY_INDUSTRY = {
+  restaurant: 'booking-asst',
+  barbershop: 'salon-book',
+  clinic: 'receptionist',
+  ecommerce: 'order-asst',
+  realestate: 'first-reply',
+  fitness: 'fitness-book'
 };
 
 function Workflow({ plan }) {
@@ -1408,9 +1438,9 @@ function Workflow({ plan }) {
   }, [playing]);
 
   if (!plan.ready) return null;
-  const flowId = plan.industry.workflowDefault || plan.automations[0]?.id;
-  const flow = FLOWS[flowId] || Object.values(FLOWS)[0];
-  const primary = plan.automations.find((a) => a.id === flowId) || plan.automations[0];
+  const flowKey = FLOWS_BY_INDUSTRY[plan.industryId] || plan.industry.workflowDefault || plan.automations[0]?.id;
+  const flow = FLOWS[flowKey] || Object.values(FLOWS)[0];
+  const primary = plan.automations.find((a) => a.id === plan.industry.workflowDefault) || plan.automations[0];
 
   return (
     <section className="sec" data-screen-label="02 Workflow">
@@ -1590,7 +1620,7 @@ function FinalCTA({ plan }) {
           <div className="cta-meta">
             <span className="metabit"><_Icon name="check" size={12} />Reply within 2 hours</span>
             <span className="metabit"><_Icon name="check" size={12} />No commitment</span>
-            <span className="metabit"><_Icon name="check" size={12} />Dubai-based team</span>
+            <span className="metabit"><_Icon name="check" size={12} />Abu Dhabi-based team</span>
           </div>
         </div>
 
