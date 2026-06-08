@@ -6,7 +6,7 @@
 <title>Services · LEKTrony</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
     --paper:    #f7f3e8;
@@ -52,6 +52,7 @@
     position: relative;
     min-height: 100vh;
   }
+  body.menu-open { overflow: hidden; }
   body::before {
     content: "";
     position: fixed; inset: 0;
@@ -132,6 +133,98 @@
   }
   .navlinks a:hover { background: var(--paper-2); color: var(--ink); }
   .navlinks a.active { color: var(--ink); background: var(--accent-soft); }
+
+  /* ---------- Hamburger toggle ---------- */
+  .nav-toggle {
+    display: none;
+    width: 42px; height: 42px;
+    align-items: center; justify-content: center;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 9px;
+    color: var(--ink);
+  }
+  .nav-toggle:hover { background: var(--paper-2); border-color: var(--ink-3); }
+  .nav-toggle .bars { position: relative; width: 19px; height: 13px; }
+  .nav-toggle .bars i {
+    position: absolute; left: 0; width: 100%; height: 1.6px;
+    background: currentColor; border-radius: 2px;
+    transition: transform .32s cubic-bezier(.4,.1,.2,1), opacity .2s ease;
+  }
+  .nav-toggle .bars i:nth-child(1) { top: 0; }
+  .nav-toggle .bars i:nth-child(2) { top: 5.7px; }
+  .nav-toggle .bars i:nth-child(3) { top: 11.4px; }
+
+  /* ---------- Mobile slide-in menu ---------- */
+  .mobile-menu { position: fixed; inset: 0; z-index: 100; visibility: hidden; }
+  .mobile-menu.open { visibility: visible; }
+  .mm-scrim {
+    position: absolute; inset: 0;
+    background: rgba(26, 24, 20, 0.42);
+    -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+    opacity: 0; transition: opacity .34s ease;
+  }
+  .mobile-menu.open .mm-scrim { opacity: 1; }
+  .mm-panel {
+    position: absolute; top: 0; right: 0;
+    height: 100%; width: min(84vw, 372px);
+    background: var(--paper);
+    border-left: 1px solid var(--line);
+    box-shadow: -24px 0 60px -30px rgba(26,24,20,0.45);
+    display: flex; flex-direction: column;
+    padding: 18px 20px calc(24px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(100%);
+    transition: transform .4s cubic-bezier(.22,.61,.36,1);
+    overflow: hidden;
+  }
+  .mm-panel::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='ng2'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1  0 0 0 0 0.08  0 0 0 0 0.05  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(#ng2)'/></svg>");
+    background-size: 220px 220px; opacity: 0.3; mix-blend-mode: multiply;
+  }
+  .mm-panel::after {
+    content: ""; position: absolute; top: -120px; right: -120px;
+    width: 320px; height: 320px; pointer-events: none; z-index: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(245,200,74,0.20) 0%, transparent 68%);
+  }
+  .mobile-menu.open .mm-panel { transform: translateX(0); }
+  .mm-panel > * { position: relative; z-index: 1; }
+  .mm-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 0; }
+  .mm-close {
+    width: 40px; height: 40px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line); background: var(--surface);
+    border-radius: 9px; color: var(--ink-2);
+  }
+  .mm-close:hover { background: var(--paper-2); color: var(--ink); }
+  .mm-links { margin-top: 26px; display: flex; flex-direction: column; gap: 4px; }
+  .mm-links a {
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 58px; padding: 14px 16px;
+    border-radius: 11px;
+    font-size: 21px; font-weight: 400; letter-spacing: -0.02em;
+    color: var(--ink-2);
+    transition: background .18s ease, color .18s ease, transform .42s cubic-bezier(.22,.61,.36,1), opacity .42s ease;
+    opacity: 0; transform: translateX(14px);
+  }
+  .mobile-menu.open .mm-links a { opacity: 1; transform: translateX(0); }
+  .mobile-menu.open .mm-links a:nth-child(1) { transition-delay: .08s; }
+  .mobile-menu.open .mm-links a:nth-child(2) { transition-delay: .13s; }
+  .mobile-menu.open .mm-links a:nth-child(3) { transition-delay: .18s; }
+  .mobile-menu.open .mm-links a:nth-child(4) { transition-delay: .23s; }
+  .mm-links a:hover { background: var(--paper-2); color: var(--ink); }
+  .mm-links a.active { background: var(--accent-soft); color: var(--ink); }
+  .mm-links a .mm-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .18s ease; }
+  .mm-links a.active .mm-dot { opacity: 1; }
+  .mm-actions { margin-top: auto; display: flex; flex-direction: column; gap: 9px; padding-top: 24px; }
+  .mm-actions .btn { padding: 13px 16px; font-size: 14.5px; }
+  .mm-foot {
+    margin-top: 18px; padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: flex; align-items: center; gap: 8px;
+    color: var(--muted); font-size: 10.5px;
+    text-transform: none; letter-spacing: 0.02em;
+  }
 
   /* ---------- Shell ---------- */
   .wrap { max-width: 1240px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 2; }
@@ -386,14 +479,59 @@
   .planbar .clear { background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 12px; padding: 4px; }
   .planbar .clear:hover { color: var(--paper); }
 
+  /* ---------- Language switch ---------- */
+  .lang-switch {
+    display: inline-flex; align-items: center;
+    border: 1px solid var(--line); border-radius: 999px;
+    background: var(--surface); padding: 2px; gap: 2px;
+  }
+  .lang-switch button {
+    width: 30px; height: 30px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; background: transparent; color: var(--ink-3);
+    border-radius: 999px; font-size: 15px; line-height: 1;
+    font-family: 'Sora', sans-serif;
+    transition: background .15s ease, color .15s ease;
+  }
+  .lang-switch button[data-lang="ar"] { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 16px; }
+  .lang-switch button:hover { color: var(--ink); }
+  .lang-switch button.on { background: var(--ink); color: var(--paper); }
+  .mm-lang { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+  .mm-lang .lbl { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* ---------- RTL (Arabic) ---------- */
+  [dir="rtl"] body, [dir="rtl"] .lang-switch button[data-lang="ar"] { font-family: 'IBM Plex Sans Arabic', 'Sora', system-ui, sans-serif; }
+  [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4 { font-family: 'IBM Plex Sans Arabic', 'Sora', sans-serif; letter-spacing: 0; }
+  [dir="rtl"] .anno, [dir="rtl"] .mono { font-family: 'IBM Plex Sans Arabic', 'JetBrains Mono', monospace; letter-spacing: 0; }
+  [dir="rtl"] .anno { text-transform: none; }
+  [dir="rtl"] .eyebrow { letter-spacing: 0; text-transform: none; }
+  [dir="rtl"] .hero h1 { line-height: 1.18; }
+  [dir="rtl"] .sec-title, [dir="rtl"] .final h2 { line-height: 1.25; }
+  [dir="rtl"] .pcard-tag, [dir="rtl"] .bundle-price .per, [dir="rtl"] .pcard-price .per, [dir="rtl"] .planbar .total .per { font-family: 'JetBrains Mono', monospace; }
+  [dir="rtl"] .startone .big { letter-spacing: 0; }
+  [dir="rtl"] .mm-panel {
+    right: auto; left: 0;
+    border-left: none; border-right: 1px solid var(--line);
+    box-shadow: 24px 0 60px -30px rgba(26,24,20,0.45);
+    transform: translateX(-100%);
+  }
+  [dir="rtl"] .mm-panel::after { right: auto; left: -120px; }
+  [dir="rtl"] .mobile-menu.open .mm-panel { transform: translateX(0); }
+  [dir="rtl"] .mm-links a { transform: translateX(-14px); }
+  [dir="rtl"] .mobile-menu.open .mm-links a { transform: translateX(0); }
+
   /* ---------- Responsive ---------- */
   @media (max-width: 980px) {
     .grid { grid-template-columns: repeat(2, 1fr); }
     .bundles { grid-template-columns: repeat(2, 1fr); }
   }
+  @media (max-width: 900px) {
+    .navlinks { display: none; }
+    .nav-right .desk-cta { display: none; }
+    .nav-toggle { display: inline-flex; }
+  }
   @media (max-width: 760px) {
     .nav { padding: 12px 16px; }
-    .navlinks { display: none; }
     .wrap { padding: 0 16px; }
     .hero { padding: 44px 0 28px; }
     .tabs { top: 60px; }
@@ -422,40 +560,90 @@
         </svg>
       </span>
       <span class="logo-text">LEKTrony</span>
-      <span class="region anno">UAE</span>
+      <span class="region anno" data-i18n="nav.region">UAE</span>
     </a>
     <div class="navlinks">
-      <a href="index.html">How it works</a>
-      <a href="index.html">Integrations</a>
-      <a href="services.html" class="active">Services</a>
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="services.html" class="active" data-i18n="nav.services">Services</a>
+      <a href="about.html" data-i18n="nav.about">About</a>
     </div>
   </div>
   <div class="nav-right">
-    <a class="btn ghost sm" href="index.html">WhatsApp us</a>
-    <a class="btn sm" href="index.html">Book a call</a>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-label="English">A</button>
+      <button type="button" data-lang="ar" aria-label="العربية">ع</button>
+    </div>
+    <a class="btn ghost sm desk-cta" href="index.html" data-i18n="cta.whatsapp">WhatsApp us</a>
+    <a class="btn sm desk-cta" href="index.html" data-i18n="cta.book">Book a call</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
   </div>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Site menu">
+  <div class="mm-scrim" data-close></div>
+  <div class="mm-panel">
+    <div class="mm-head">
+      <a class="logo" href="index.html">
+        <span class="logomark" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+            <rect x="2" y="2" width="11" height="11" rx="2" fill="currentColor" />
+            <rect x="15" y="2" width="11" height="11" rx="2" fill="#ffd84d" />
+            <rect x="2" y="15" width="11" height="11" rx="2" fill="currentColor" />
+            <rect x="15" y="15" width="11" height="11" rx="2" fill="currentColor" />
+          </svg>
+        </span>
+        <span class="logo-text">LEKTrony</span>
+      </a>
+      <button class="mm-close" id="mmClose" data-close aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+      </button>
+    </div>
+    <nav class="mm-links">
+      <a href="index.html"><span data-i18n="nav.home">Home</span><span class="mm-dot"></span></a>
+      <a href="services.html" class="active"><span data-i18n="nav.services">Services</span><span class="mm-dot"></span></a>
+      <a href="about.html"><span data-i18n="nav.about">About</span><span class="mm-dot"></span></a>
+      <a href="index.html#contact"><span data-i18n="nav.contact">Contact</span><span class="mm-dot"></span></a>
+    </nav>
+    <div class="mm-actions">
+      <a class="btn ghost full" href="index.html" data-i18n="cta.whatsapp">WhatsApp us</a>
+      <a class="btn full" href="index.html" data-i18n="cta.book">Book a call</a>
+    </div>
+    <div class="mm-lang">
+      <span class="lbl" data-i18n="lang.label">Language</span>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-label="English">A</button>
+        <button type="button" data-lang="ar" aria-label="العربية">ع</button>
+      </div>
+    </div>
+    <div class="mm-foot anno">
+      <span class="dot dot-live"></span> <span data-i18n="foot.based">Based in Abu Dhabi · Serving the UAE</span>
+    </div>
+  </div>
+</div>
 
 <div class="wrap">
 
   <!-- HERO -->
   <header class="hero" data-screen-label="Hero">
-    <div class="eyebrow"><span class="spark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg></span><span>AI Employees · Monthly plans</span></div>
-    <h1>AI employees for every part of your business</h1>
-    <p class="sub">Choose the AI tools your business needs today. Start with one, then add more as your operations grow.</p>
-    <p class="support">Built for UAE businesses using WhatsApp, Instagram, calendars, spreadsheets, payment links, and daily operational workflows.</p>
+    <div class="eyebrow"><span class="spark"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg></span><span data-i18n="svc.eyebrow">AI Employees · Monthly plans</span></div>
+    <h1 data-i18n="svc.h1">AI employees for every part of your business</h1>
+    <p class="sub" data-i18n="svc.sub">Choose the AI tools your business needs today. Start with one, then add more as your operations grow.</p>
+    <p class="support" data-i18n="svc.support">Built for UAE businesses using WhatsApp, Instagram, calendars, spreadsheets, payment links, and daily operational workflows.</p>
     <div class="hero-cta">
-      <a class="btn lg" href="index.html">Build my AI team</a>
-      <a class="btn ghost lg" href="index.html">Book a consultation</a>
+      <a class="btn lg" href="index.html" data-i18n="cta.build">Build my AI team</a>
+      <a class="btn ghost lg" href="index.html" data-i18n="cta.consult">Book a consultation</a>
     </div>
   </header>
 
   <!-- PRODUCT GRID -->
   <section class="section" data-screen-label="AI employees grid">
     <div class="sec-head">
-      <div class="sec-tag"><span class="mono num">01</span><span class="anno">The roster</span></div>
-      <h2 class="sec-title">Hire one role at a time.</h2>
-      <p class="sec-sub">Each AI employee takes over one function and runs it around the clock. Pick by department, or add the ones that fit.</p>
+      <div class="sec-tag"><span class="mono num">01</span><span class="anno" data-i18n="svc.roster.tag">The roster</span></div>
+      <h2 class="sec-title" data-i18n="svc.roster.title">Hire one role at a time.</h2>
+      <p class="sec-sub" data-i18n="svc.roster.sub">Each AI employee takes over one function and runs it around the clock. Pick by department, or add the ones that fit.</p>
     </div>
 
     <div class="tabs" id="tabs"></div>
@@ -468,9 +656,9 @@
   <!-- BUNDLES -->
   <section class="section" data-screen-label="Bundles" style="margin-top:40px;">
     <div class="sec-head">
-      <div class="sec-tag"><span class="mono num">02</span><span class="anno">Pre-built teams</span></div>
-      <h2 class="sec-title">Or start with a ready-made team.</h2>
-      <p class="sec-sub">Common combinations, bundled at a lower monthly rate than hiring each role on its own.</p>
+      <div class="sec-tag"><span class="mono num">02</span><span class="anno" data-i18n="svc.bundles.tag">Pre-built teams</span></div>
+      <h2 class="sec-title" data-i18n="svc.bundles.title">Or start with a ready-made team.</h2>
+      <p class="sec-sub" data-i18n="svc.bundles.sub">Common combinations, bundled at a lower monthly rate than hiring each role on its own.</p>
     </div>
     <div class="bundles" id="bundles"></div>
   </section>
@@ -478,34 +666,34 @@
   <!-- SETUP NOTE -->
   <section class="section" data-screen-label="Setup">
     <div class="note">
-      <div class="note-head"><span class="dot dot-live"></span><span class="anno">One-time setup</span></div>
-      <p>Most AI employees require a one-time setup depending on integrations, workflows, and business rules. We confirm this with you after the first consultation — no surprises.</p>
+      <div class="note-head"><span class="dot dot-live"></span><span class="anno" data-i18n="svc.setup.tag">One-time setup</span></div>
+      <p data-i18n="svc.setup.p">Most AI employees require a one-time setup depending on integrations, workflows, and business rules. We confirm this with you after the first consultation — no surprises.</p>
       <div class="setup-rows">
-        <div class="setup-row"><b>Simple setup</b><span class="amt">AED 1,000 – 2,500</span></div>
-        <div class="setup-row"><b>Standard setup</b><span class="amt">AED 2,500 – 5,000</span></div>
-        <div class="setup-row"><b>Advanced setup</b><span class="amt">Custom</span></div>
+        <div class="setup-row"><b data-i18n="svc.setup.s1">Simple setup</b><span class="amt" data-i18n="svc.setup.a1">AED 1,000 – 2,500</span></div>
+        <div class="setup-row"><b data-i18n="svc.setup.s2">Standard setup</b><span class="amt" data-i18n="svc.setup.a2">AED 2,500 – 5,000</span></div>
+        <div class="setup-row"><b data-i18n="svc.setup.s3">Advanced setup</b><span class="amt" data-i18n="svc.setup.a3">Custom</span></div>
       </div>
     </div>
   </section>
 
   <!-- START WITH ONE -->
   <section class="startone" data-screen-label="Start with one">
-    <div class="big">Start with <span class="one">one</span>.</div>
+    <div class="big" data-i18n="svc.start.big" data-i18n-html="1">Start with <span class="one">one</span>.</div>
     <div>
-      <h3>You don't need a full transformation on day one.</h3>
-      <p>Most clients start with a single AI employee — usually customer replies, bookings, or sales follow-up. Once it proves useful, we add the next role. Calm, deliberate, one hire at a time.</p>
+      <h3 data-i18n="svc.start.h">You don't need a full transformation on day one.</h3>
+      <p data-i18n="svc.start.p">Most clients start with a single AI employee — usually customer replies, bookings, or sales follow-up. Once it proves useful, we add the next role. Calm, deliberate, one hire at a time.</p>
     </div>
   </section>
 
   <!-- FINAL CTA -->
   <section class="final" data-screen-label="Final CTA">
     <div class="final-in">
-      <div class="eyebrow"><span class="dot dot-live"></span><span>When you're ready</span></div>
-      <h2>Not sure which AI employee you need first?</h2>
-      <p>Tell us about your business and we'll map the first AI role worth building — in a short conversation, no slides.</p>
+      <div class="eyebrow"><span class="dot dot-live"></span><span data-i18n="svc.final.eyebrow">When you're ready</span></div>
+      <h2 data-i18n="svc.final.h">Not sure which AI employee you need first?</h2>
+      <p data-i18n="svc.final.p">Tell us about your business and we'll map the first AI role worth building — in a short conversation, no slides.</p>
       <div class="final-cta">
-        <a class="btn primary lg" href="index.html">Build my AI team</a>
-        <a class="btn ghost lg" href="index.html">WhatsApp us</a>
+        <a class="btn primary lg" href="index.html" data-i18n="cta.build">Build my AI team</a>
+        <a class="btn ghost lg" href="index.html" data-i18n="cta.whatsapp">WhatsApp us</a>
       </div>
     </div>
   </section>
@@ -523,18 +711,18 @@
           <rect x="15" y="15" width="11" height="11" rx="2" fill="currentColor" />
         </svg>
       </span>
-      <span>LEKTrony · AI operations · Abu Dhabi</span>
+      <span data-i18n="foot.logo">LEKTrony · AI operations · Abu Dhabi</span>
     </a>
     <nav class="footer-links">
-      <a href="index.html">Solutions</a>
-      <a href="index.html">How it works</a>
-      <a href="services.html">Services</a>
-      <a href="index.html">Contact</a>
+      <a href="index.html" data-i18n="nav.home">Home</a>
+      <a href="services.html" data-i18n="nav.services">Services</a>
+      <a href="about.html" data-i18n="nav.about">About</a>
+      <a href="index.html#contact" data-i18n="nav.contact">Contact</a>
     </nav>
   </div>
   <div class="footer-row faint">
-    <span class="anno">© 2026 · Privacy · Terms</span>
-    <span class="anno">MADE IN ABU DHABI · SERVING THE UAE &amp; GCC</span>
+    <span class="anno" data-i18n="foot.legal">© 2026 · Privacy · Terms</span>
+    <span class="anno" data-i18n="foot.made">MADE IN ABU DHABI · SERVING THE UAE &amp; GCC</span>
   </div>
 </footer>
 
@@ -542,109 +730,189 @@
 <div class="planbar" id="planbar" aria-live="polite">
   <div class="planbar-in">
     <div class="planbar-left">
-      <span class="count"><span class="dot dot-live"></span><b id="pbCount">0</b>&nbsp;AI employees in your plan</span>
+      <span class="count"><span class="dot dot-live"></span><b id="pbCount">0</b>&nbsp;<span id="pbCountLabel" data-i18n="svc.bar.count">AI employees in your plan</span></span>
       <span class="names mono" id="pbNames"></span>
     </div>
     <div class="planbar-right">
-      <div class="total"><span class="amt" id="pbTotal">AED 0</span> <span class="per">/month</span></div>
-      <button class="clear" id="pbClear">Clear</button>
-      <a class="btn primary" href="index.html" id="pbContinue">Review my plan →</a>
+      <div class="total"><span class="amt" id="pbTotal">AED 0</span> <span class="per" id="pbPer" data-i18n="svc.per">/month</span></div>
+      <button class="clear" id="pbClear" data-i18n="svc.bar.clear">Clear</button>
+      <a class="btn primary" href="index.html" id="pbContinue" data-i18n="svc.bar.review">Review my plan →</a>
     </div>
   </div>
 </div>
 
 <script>
   /* ----- Data ----- */
+  var LANG = 'en';
+
   var CATS = [
-    { id: 'all',   label: 'All' },
-    { id: 'comm',  label: 'Customer Communication' },
-    { id: 'sales', label: 'Sales & Payments' },
-    { id: 'ops',   label: 'Operations & Reporting' },
-    { id: 'admin', label: 'Admin & Documents' },
-    { id: 'ent',   label: 'Enterprise' }
+    { id: 'all',   label: 'All',                     label_ar: 'الكل' },
+    { id: 'comm',  label: 'Customer Communication',  label_ar: 'تواصل العملاء' },
+    { id: 'sales', label: 'Sales & Payments',        label_ar: 'المبيعات والمدفوعات' },
+    { id: 'ops',   label: 'Operations & Reporting',  label_ar: 'العمليات والتقارير' },
+    { id: 'admin', label: 'Admin & Documents',       label_ar: 'الإدارة والمستندات' },
+    { id: 'ent',   label: 'Enterprise',              label_ar: 'المؤسسات' }
   ];
 
   var EMPLOYEES = [
     { id: 'receptionist', tag: 'RC', cat: 'comm', price: 299, popular: true,
       name: 'AI Receptionist',
+      name_ar: 'موظّف استقبال بالذكاء الاصطناعي',
       desc: 'Handles WhatsApp and Instagram inquiries, answers FAQs, captures customer details, and routes serious leads to the business owner.',
+      desc_ar: 'يتعامل مع استفسارات واتساب وإنستغرام، ويجيب عن الأسئلة الشائعة، ويسجّل بيانات العملاء، ويحوّل العملاء الجادّين إلى صاحب العمل.',
       handles: ['WhatsApp replies', 'Instagram DMs', 'FAQs', 'lead capture', 'handoff to staff'],
-      best: 'Salons, clinics, restaurants, fitness studios, real estate brokers.' },
+      handles_ar: ['ردود واتساب', 'رسائل إنستغرام', 'الأسئلة الشائعة', 'التقاط العملاء', 'التحويل إلى الفريق'],
+      best: 'Salons, clinics, restaurants, fitness studios, real estate brokers.',
+      best_ar: 'صالونات، عيادات، مطاعم، استوديوهات لياقة، وسطاء عقارات.' },
     { id: 'booking', tag: 'BK', cat: 'comm', price: 249,
       name: 'AI Booking Assistant',
+      name_ar: 'مساعد حجوزات بالذكاء الاصطناعي',
       desc: 'Manages bookings, appointment confirmations, rescheduling, reminders, and basic waitlist logic.',
+      desc_ar: 'يدير الحجوزات وتأكيد المواعيد وإعادة الجدولة والتذكيرات ومنطق قائمة الانتظار الأساسي.',
       handles: ['bookings', 'calendar checks', 'reminders', 'rescheduling', 'no-show reduction'],
-      best: 'Salons, clinics, restaurants, gyms, classes.' },
+      handles_ar: ['الحجوزات', 'التحقق من التقويم', 'التذكيرات', 'إعادة الجدولة', 'تقليل التخلّف عن الحضور'],
+      best: 'Salons, clinics, restaurants, gyms, classes.',
+      best_ar: 'صالونات، عيادات، مطاعم، صالات رياضية، حصص تدريبية.' },
     { id: 'sales', tag: 'SL', cat: 'sales', price: 399,
       name: 'AI Sales Assistant',
+      name_ar: 'مساعد مبيعات بالذكاء الاصطناعي',
       desc: 'Responds to product questions, recommends items or services, follows up with leads, and sends payment links.',
+      desc_ar: 'يجيب عن أسئلة المنتجات، ويوصي بالأصناف أو الخدمات، ويتابع العملاء المحتملين، ويرسل روابط الدفع.',
       handles: ['product questions', 'recommendations', 'lead follow-up', 'payment links', 'order summaries'],
-      best: 'Instagram businesses, ecommerce stores, retail sellers, service providers.' },
+      handles_ar: ['أسئلة المنتجات', 'التوصيات', 'متابعة العملاء', 'روابط الدفع', 'ملخّصات الطلبات'],
+      best: 'Instagram businesses, ecommerce stores, retail sellers, service providers.',
+      best_ar: 'متاجر إنستغرام، المتاجر الإلكترونية، تجار التجزئة، مقدّمو الخدمات.' },
     { id: 'crm', tag: 'CR', cat: 'sales', price: 299,
       name: 'AI CRM Assistant',
+      name_ar: 'مساعد إدارة علاقات العملاء بالذكاء الاصطناعي',
       desc: 'Creates customer profiles, logs interactions, updates customer records, and reminds the team who needs follow-up.',
+      desc_ar: 'ينشئ ملفات العملاء، ويسجّل التفاعلات، ويحدّث سجلات العملاء، ويذكّر الفريق بمن يحتاج إلى متابعة.',
       handles: ['customer records', 'interaction logs', 'follow-up reminders', 'lead status updates'],
-      best: 'Any business that loses track of customers in WhatsApp, Excel, or scattered notes.' },
+      handles_ar: ['سجلات العملاء', 'سجلّ التفاعلات', 'تذكيرات المتابعة', 'تحديث حالة العملاء'],
+      best: 'Any business that loses track of customers in WhatsApp, Excel, or scattered notes.',
+      best_ar: 'أي عمل يفقد تتبّع عملائه في واتساب أو إكسل أو الملاحظات المبعثرة.' },
     { id: 'dashboard', tag: 'DB', cat: 'ops', price: 399,
       name: 'AI Dashboard Builder',
+      name_ar: 'منشئ لوحات المعلومات بالذكاء الاصطناعي',
       desc: 'Turns spreadsheets, sales data, bookings, or operations data into simple dashboards for owners and managers.',
+      desc_ar: 'يحوّل الجداول وبيانات المبيعات والحجوزات وبيانات العمليات إلى لوحات معلومات بسيطة لأصحاب الأعمال والمدراء.',
       handles: ['management dashboards', 'weekly KPIs', 'spreadsheet cleanup', 'simple visual reports'],
-      best: 'Restaurants, retail, clinics, trading companies, service businesses.' },
+      handles_ar: ['لوحات للإدارة', 'مؤشرات أسبوعية', 'تنظيف الجداول', 'تقارير مرئية بسيطة'],
+      best: 'Restaurants, retail, clinics, trading companies, service businesses.',
+      best_ar: 'مطاعم، تجزئة، عيادات، شركات تجارية، شركات خدمية.' },
     { id: 'reporting', tag: 'RP', cat: 'ops', price: 299,
       name: 'AI Reporting Analyst',
+      name_ar: 'محلّل تقارير بالذكاء الاصطناعي',
       desc: 'Generates daily, weekly, or monthly operational summaries from business data and sends them to management.',
+      desc_ar: 'ينشئ ملخّصات تشغيلية يومية أو أسبوعية أو شهرية من بيانات العمل ويرسلها إلى الإدارة.',
       handles: ['daily summaries', 'weekly reports', 'KPI commentary', 'management updates'],
-      best: 'Owners and managers who want visibility without manually preparing reports.' },
+      handles_ar: ['ملخّصات يومية', 'تقارير أسبوعية', 'تعليق على المؤشرات', 'تحديثات للإدارة'],
+      best: 'Owners and managers who want visibility without manually preparing reports.',
+      best_ar: 'أصحاب الأعمال والمدراء الراغبون في رؤية واضحة دون إعداد التقارير يدوياً.' },
     { id: 'contracting', tag: 'CT', cat: 'admin', price: 399,
       name: 'AI Contracting Agent',
+      name_ar: 'وكيل عقود بالذكاء الاصطناعي',
       desc: 'Drafts, reviews, summarizes, and organizes contracts, quotations, proposals, and agreement templates.',
+      desc_ar: 'يصيغ ويراجع ويلخّص وينظّم العقود وعروض الأسعار والعروض وقوالب الاتفاقيات.',
       handles: ['contract drafts', 'proposal drafts', 'quotation templates', 'clause summaries', 'renewal reminders'],
-      best: 'Service businesses, agencies, real estate, suppliers, consultants.' },
+      handles_ar: ['مسودات العقود', 'مسودات العروض', 'قوالب عروض الأسعار', 'ملخّصات البنود', 'تذكيرات التجديد'],
+      best: 'Service businesses, agencies, real estate, suppliers, consultants.',
+      best_ar: 'الشركات الخدمية، الوكالات، العقارات، المورّدون، الاستشاريون.' },
     { id: 'collections', tag: 'CL', cat: 'sales', price: 299,
       name: 'AI Collections Assistant',
+      name_ar: 'مساعد تحصيل بالذكاء الاصطناعي',
       desc: 'Tracks unpaid invoices, sends polite payment reminders, and updates the owner when customers pay or delay.',
+      desc_ar: 'يتتبّع الفواتير غير المدفوعة، ويرسل تذكيرات دفع مهذّبة، ويُبلغ صاحب العمل عند سداد العملاء أو تأخّرهم.',
       handles: ['payment reminders', 'overdue follow-ups', 'invoice tracking', 'payment status updates'],
-      best: 'Service providers, suppliers, clinics, studios, agencies.' },
+      handles_ar: ['تذكيرات الدفع', 'متابعة المتأخرات', 'تتبّع الفواتير', 'تحديث حالة الدفع'],
+      best: 'Service providers, suppliers, clinics, studios, agencies.',
+      best_ar: 'مقدّمو الخدمات، المورّدون، العيادات، الاستوديوهات، الوكالات.' },
     { id: 'marketing', tag: 'MK', cat: 'comm', price: 249,
       name: 'AI Marketing Assistant',
+      name_ar: 'مساعد تسويق بالذكاء الاصطناعي',
       desc: 'Creates simple campaigns, captions, WhatsApp broadcast messages, and promotion ideas based on the business offering.',
+      desc_ar: 'ينشئ حملات بسيطة وتعليقات ورسائل بثّ عبر واتساب وأفكار عروض ترويجية بناءً على ما يقدّمه العمل.',
       handles: ['captions', 'campaign ideas', 'WhatsApp broadcasts', 'promotion messages', 'content calendar ideas'],
-      best: 'Instagram businesses, restaurants, salons, clinics, gyms.' },
+      handles_ar: ['التعليقات', 'أفكار الحملات', 'رسائل واتساب الجماعية', 'رسائل العروض', 'أفكار محتوى'],
+      best: 'Instagram businesses, restaurants, salons, clinics, gyms.',
+      best_ar: 'متاجر إنستغرام، مطاعم، صالونات، عيادات، صالات رياضية.' },
     { id: 'operations', tag: 'OP', cat: 'ops', price: 399,
       name: 'AI Operations Assistant',
+      name_ar: 'مساعد عمليات بالذكاء الاصطناعي',
       desc: 'Tracks internal tasks, follows up with staff, sends reminders, and gives the owner a simple daily operations update.',
+      desc_ar: 'يتتبّع المهام الداخلية، ويتابع الموظفين، ويرسل التذكيرات، ويزوّد صاحب العمل بتحديث تشغيلي يومي بسيط.',
       handles: ['task tracking', 'staff reminders', 'escalation alerts', 'daily operations updates'],
-      best: 'Businesses with multiple staff, branches, suppliers, or repeated daily tasks.' },
+      handles_ar: ['تتبّع المهام', 'تذكير الموظفين', 'تنبيهات التصعيد', 'تحديثات تشغيلية يومية'],
+      best: 'Businesses with multiple staff, branches, suppliers, or repeated daily tasks.',
+      best_ar: 'الأعمال ذات الموظفين أو الفروع أو المورّدين المتعددين أو المهام اليومية المتكررة.' },
     { id: 'hr', tag: 'HR', cat: 'admin', price: 249,
       name: 'AI HR Assistant',
+      name_ar: 'مساعد موارد بشرية بالذكاء الاصطناعي',
       desc: 'Answers staff questions, supports onboarding, tracks leave requests, and helps organize internal policies.',
+      desc_ar: 'يجيب عن أسئلة الموظفين، ويدعم الإلحاق الوظيفي، ويتتبّع طلبات الإجازات، ويساعد في تنظيم السياسات الداخلية.',
       handles: ['staff FAQs', 'onboarding checklists', 'leave requests', 'policy guidance'],
-      best: 'Growing SMEs with staff but no dedicated HR team.' },
+      handles_ar: ['أسئلة الموظفين', 'قوائم الإلحاق', 'طلبات الإجازات', 'إرشادات السياسات'],
+      best: 'Growing SMEs with staff but no dedicated HR team.',
+      best_ar: 'الشركات الصغيرة والمتوسطة النامية التي لديها موظفون دون فريق موارد بشرية مخصّص.' },
     { id: 'compliance', tag: 'CP', cat: 'ent', price: 999,
       name: 'AI Compliance Assistant',
+      name_ar: 'مساعد امتثال بالذكاء الاصطناعي',
       desc: 'Helps teams search policies, summarize procedures, prepare control checklists, and support internal review work.',
+      desc_ar: 'يساعد الفرق في البحث في السياسات وتلخيص الإجراءات وإعداد قوائم الضوابط ودعم أعمال المراجعة الداخلية.',
       handles: ['policy search', 'procedure summaries', 'checklist generation', 'internal control support', 'review preparation'],
-      best: 'Regulated businesses, financial services, compliance teams, enterprise functions.' }
+      handles_ar: ['البحث في السياسات', 'ملخّصات الإجراءات', 'إنشاء القوائم', 'دعم الضوابط الداخلية', 'تجهيز المراجعة'],
+      best: 'Regulated businesses, financial services, compliance teams, enterprise functions.',
+      best_ar: 'الأعمال الخاضعة للتنظيم، الخدمات المالية، فرق الامتثال، وظائف المؤسسات.' }
   ];
 
   var BUNDLES = [
-    { name: 'Starter AI Team', price: 'AED 499', per: '/month',
+    { name: 'Starter AI Team', name_ar: 'فريق ذكاء اصطناعي للبداية',
+      price: 'AED 499', price_ar: 'د.إ 499', per: '/month', per_ar: '/شهرياً',
       incl: ['AI Receptionist', 'AI Booking Assistant'],
+      incl_ar: ['موظّف استقبال بالذكاء الاصطناعي', 'مساعد حجوزات بالذكاء الاصطناعي'],
       ids: ['receptionist','booking'],
-      best: 'Small businesses starting with customer communication.' },
-    { name: 'Growth AI Team', price: 'AED 899', per: '/month', rec: true,
+      best: 'Small businesses starting with customer communication.',
+      best_ar: 'الشركات الصغيرة التي تبدأ بالتواصل مع العملاء.' },
+    { name: 'Growth AI Team', name_ar: 'فريق ذكاء اصطناعي للنمو',
+      price: 'AED 899', price_ar: 'د.إ 899', per: '/month', per_ar: '/شهرياً', rec: true,
       incl: ['AI Receptionist', 'AI Sales Assistant', 'AI CRM Assistant'],
+      incl_ar: ['موظّف استقبال بالذكاء الاصطناعي', 'مساعد مبيعات بالذكاء الاصطناعي', 'مساعد إدارة علاقات العملاء'],
       ids: ['receptionist','sales','crm'],
-      best: 'Businesses handling active leads, customers, and follow-ups.' },
-    { name: 'Operations AI Team', price: 'AED 1,299', per: '/month',
+      best: 'Businesses handling active leads, customers, and follow-ups.',
+      best_ar: 'الأعمال التي تتعامل مع عملاء محتملين ومتابعات نشطة.' },
+    { name: 'Operations AI Team', name_ar: 'فريق ذكاء اصطناعي للعمليات',
+      price: 'AED 1,299', price_ar: 'د.إ 1,299', per: '/month', per_ar: '/شهرياً',
       incl: ['AI Dashboard Builder', 'AI Reporting Analyst', 'AI Operations Assistant'],
+      incl_ar: ['منشئ لوحات المعلومات', 'محلّل تقارير بالذكاء الاصطناعي', 'مساعد عمليات بالذكاء الاصطناعي'],
       ids: ['dashboard','reporting','operations'],
-      best: 'Owners who want visibility and control over daily operations.' },
-    { name: 'Enterprise AI Team', price: 'Custom', per: '',
+      best: 'Owners who want visibility and control over daily operations.',
+      best_ar: 'أصحاب الأعمال الراغبون في رؤية العمليات اليومية والتحكّم بها.' },
+    { name: 'Enterprise AI Team', name_ar: 'فريق ذكاء اصطناعي للمؤسسات',
+      price: 'Custom', price_ar: 'حسب الطلب', per: '', per_ar: '',
       incl: ['AI Compliance Assistant', 'AI Contracting Agent', 'AI Dashboard Builder', 'Custom workflows'],
+      incl_ar: ['مساعد امتثال بالذكاء الاصطناعي', 'وكيل عقود بالذكاء الاصطناعي', 'منشئ لوحات المعلومات', 'سير عمل مخصّص'],
       ids: ['compliance','contracting','dashboard'],
-      best: 'Regulated or larger businesses with more complex requirements.' }
+      best: 'Regulated or larger businesses with more complex requirements.',
+      best_ar: 'الأعمال الخاضعة للتنظيم أو الأكبر حجماً ذات المتطلبات الأكثر تعقيداً.' }
   ];
+
+  /* ----- Dynamic UI strings ----- */
+  var UI = {
+    en: { popular: 'Popular first hire', handles: 'Handles', bestFor: 'Best for',
+          setup: '+ one-time setup · ', setupLink: 'confirmed after consultation',
+          add: 'Add to my plan', added: 'Added to plan',
+          showAll: 'Show all AI employees', recommended: 'Recommended', startTeam: 'Start with this team',
+          perMonth: '/month', aed: 'AED',
+          showAllN: function(n){ return 'Show all AI employees (' + n + ' more)'; } },
+    ar: { popular: 'الأكثر شيوعاً كبداية', handles: 'يتولّى', bestFor: 'الأنسب لـ',
+          setup: '+ إعداد لمرة واحدة · ', setupLink: 'يُؤكَّد بعد الاستشارة',
+          add: 'أضف إلى خطتي', added: 'أُضيف إلى الخطة',
+          showAll: 'عرض جميع موظفي الذكاء الاصطناعي', recommended: 'موصى به', startTeam: 'ابدأ بهذا الفريق',
+          perMonth: '/شهرياً', aed: 'د.إ',
+          showAllN: function(n){ return 'عرض جميع الموظفين (' + n + ' إضافية)'; } }
+  };
+  function L() { return UI[LANG]; }
+  function fld(o, k) { return (LANG === 'ar' && o[k + '_ar'] != null) ? o[k + '_ar'] : o[k]; }
 
   var INITIAL_VISIBLE = 6;
   var state = { cat: 'all', showAll: false, selected: {} };
@@ -654,7 +922,7 @@
     var html = '';
     CATS.forEach(function(c) {
       var n = c.id === 'all' ? EMPLOYEES.length : EMPLOYEES.filter(function(e){return e.cat===c.id;}).length;
-      html += '<button class="tab' + (state.cat===c.id?' on':'') + '" data-cat="' + c.id + '">' + c.label + '<span class="cnt">' + n + '</span></button>';
+      html += '<button class="tab' + (state.cat===c.id?' on':'') + '" data-cat="' + c.id + '">' + fld(c,'label') + '<span class="cnt">' + n + '</span></button>';
     });
     document.getElementById('tabs').innerHTML = html;
     Array.prototype.forEach.call(document.querySelectorAll('.tab'), function(t){
@@ -664,23 +932,23 @@
 
   /* ----- Render grid ----- */
   function cardHTML(e) {
-    var handles = e.handles.map(function(h){ return '<li>' + h + '</li>'; }).join('');
+    var handles = fld(e,'handles').map(function(h){ return '<li>' + h + '</li>'; }).join('');
     var sel = state.selected[e.id];
-    var badge = e.popular ? '<span class="pcard-badge"><span class="dot dot-live" style="width:5px;height:5px;background:#1a1814"></span>Popular first hire</span>' : '';
+    var badge = e.popular ? '<span class="pcard-badge"><span class="dot dot-live" style="width:5px;height:5px;background:#1a1814"></span>' + L().popular + '</span>' : '';
     return '<article class="pcard' + (e.popular?' popular':'') + (sel?' sel':'') + '" data-id="' + e.id + '" data-cat="' + e.cat + '">' +
       badge +
       '<div class="pcard-top"><span class="pcard-tag mono">' + e.tag + '</span>' +
-      '<div class="pcard-price"><span class="amt">AED ' + e.price + '</span><span class="per">/month</span></div></div>' +
-      '<h3 class="pcard-name">' + e.name + '</h3>' +
-      '<p class="pcard-desc">' + e.desc + '</p>' +
-      '<div class="pcard-block pcard-handles"><span class="anno">Handles</span><ul class="chiplist">' + handles + '</ul></div>' +
-      '<div class="pcard-block pcard-best"><span class="anno">Best for</span><p>' + e.best + '</p></div>' +
+      '<div class="pcard-price"><span class="amt">' + L().aed + ' ' + e.price + '</span><span class="per">' + L().perMonth + '</span></div></div>' +
+      '<h3 class="pcard-name">' + fld(e,'name') + '</h3>' +
+      '<p class="pcard-desc">' + fld(e,'desc') + '</p>' +
+      '<div class="pcard-block pcard-handles"><span class="anno">' + L().handles + '</span><ul class="chiplist">' + handles + '</ul></div>' +
+      '<div class="pcard-block pcard-best"><span class="anno">' + L().bestFor + '</span><p>' + fld(e,'best') + '</p></div>' +
       '<div class="pcard-foot">' +
-      '<span class="pcard-setup">+ one-time setup · <a href="#setup">confirmed after consultation</a></span>' +
+      '<span class="pcard-setup">' + L().setup + '<a href="#setup">' + L().setupLink + '</a></span>' +
       '<button class="add-btn" data-add="' + e.id + '">' +
       '<span class="plus"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>' +
       '<span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></span>' +
-      '<span class="add-label">' + (sel ? 'Added to plan' : 'Add to my plan') + '</span>' +
+      '<span class="add-label">' + (sel ? L().added : L().add) + '</span>' +
       '</button></div>' +
       '</article>';
   }
@@ -692,7 +960,7 @@
     if (state.cat === 'all' && !state.showAll) {
       visible = list.slice(0, INITIAL_VISIBLE);
       showWrap.style.display = 'flex';
-      document.getElementById('showall').textContent = 'Show all AI employees (' + (list.length - INITIAL_VISIBLE) + ' more)';
+      document.getElementById('showall').textContent = L().showAllN(list.length - INITIAL_VISIBLE);
     } else {
       showWrap.style.display = 'none';
     }
@@ -714,15 +982,16 @@
   /* ----- Bundles ----- */
   function renderBundles() {
     document.getElementById('bundles').innerHTML = BUNDLES.map(function(b){
-      var incl = b.incl.map(function(i){ return '<li><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></span>' + i + '</li>'; }).join('');
-      var perPart = b.per ? ' <span class="per">' + b.per + '</span>' : '';
+      var incl = fld(b,'incl').map(function(i){ return '<li><span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 10,18 20,6"/></svg></span>' + i + '</li>'; }).join('');
+      var per = fld(b,'per');
+      var perPart = per ? ' <span class="per">' + per + '</span>' : '';
       return '<article class="bundle' + (b.rec?' rec':'') + '">' +
-        (b.rec ? '<span class="bundle-badge">Recommended</span>' : '') +
-        '<h3 class="bundle-name">' + b.name + '</h3>' +
-        '<div class="bundle-price"><span class="amt">' + b.price + '</span>' + perPart + '</div>' +
+        (b.rec ? '<span class="bundle-badge">' + L().recommended + '</span>' : '') +
+        '<h3 class="bundle-name">' + fld(b,'name') + '</h3>' +
+        '<div class="bundle-price"><span class="amt">' + fld(b,'price') + '</span>' + perPart + '</div>' +
         '<ul class="bundle-incl">' + incl + '</ul>' +
-        '<p class="bundle-best">' + b.best + '</p>' +
-        '<button class="btn ' + (b.rec?'':'ghost') + ' full" data-bundle="' + b.ids.join(',') + '">Start with this team</button>' +
+        '<p class="bundle-best">' + fld(b,'best') + '</p>' +
+        '<button class="btn ' + (b.rec?'':'ghost') + ' full" data-bundle="' + b.ids.join(',') + '">' + L().startTeam + '</button>' +
         '</article>';
     }).join('');
     Array.prototype.forEach.call(document.querySelectorAll('[data-bundle]'), function(btn){
@@ -745,18 +1014,110 @@
     var chosen = EMPLOYEES.filter(function(e){ return state.selected[e.id]; });
     var total = chosen.reduce(function(s,e){ return s + e.price; }, 0);
     document.getElementById('pbCount').textContent = chosen.length;
-    document.getElementById('pbNames').textContent = chosen.map(function(e){ return e.name.replace('AI ',''); }).join('  ·  ');
-    document.getElementById('pbTotal').textContent = 'AED ' + total.toLocaleString('en-US');
+    document.getElementById('pbNames').textContent = chosen.map(function(e){ return LANG === 'ar' ? fld(e,'name') : e.name.replace('AI ',''); }).join('  ·  ');
+    document.getElementById('pbTotal').textContent = L().aed + ' ' + total.toLocaleString('en-US');
     bar.classList.add('show');
   }
 
   document.getElementById('showall').addEventListener('click', function(){ state.showAll = true; renderGrid(); });
   document.getElementById('pbClear').addEventListener('click', function(){ state.selected = {}; renderGrid(); renderBar(); });
 
-  renderTabs();
-  renderGrid();
-  renderBundles();
-  renderBar();
+  /* ----- Arabic dictionary (static text, MSA) ----- */
+  var AR = {
+    "__title": "الخدمات · LEKTrony",
+    "nav.region": "الإمارات",
+    "nav.home": "الرئيسية", "nav.services": "الخدمات", "nav.about": "من نحن", "nav.contact": "تواصل معنا",
+    "lang.label": "اللغة",
+    "cta.whatsapp": "تواصل عبر واتساب", "cta.book": "احجز مكالمة",
+    "cta.build": "ابنِ فريق الذكاء الاصطناعي", "cta.consult": "احجز استشارة",
+    "foot.based": "مقرّنا أبوظبي · نخدم دولة الإمارات",
+    "foot.logo": "LEKTrony · عمليات الذكاء الاصطناعي · أبوظبي",
+    "foot.legal": "© 2026 · الخصوصية · الشروط",
+    "foot.made": "صُنع في أبوظبي · نخدم الإمارات ودول الخليج",
+    "svc.eyebrow": "موظفو الذكاء الاصطناعي · خطط شهرية",
+    "svc.h1": "موظفو ذكاء اصطناعي لكل جزء من عملك",
+    "svc.sub": "اختر أدوات الذكاء الاصطناعي التي يحتاجها عملك اليوم. ابدأ بواحد، ثم أضِف المزيد مع نمو عملياتك.",
+    "svc.support": "مصمّم لشركات الإمارات التي تستخدم واتساب وإنستغرام والتقويمات والجداول وروابط الدفع وسير العمل التشغيلي اليومي.",
+    "svc.roster.tag": "القائمة",
+    "svc.roster.title": "وظّف دوراً واحداً في كل مرة.",
+    "svc.roster.sub": "يتولّى كل موظف ذكاء اصطناعي وظيفة واحدة ويديرها على مدار الساعة. اختر حسب القسم، أو أضِف ما يناسبك.",
+    "svc.bundles.tag": "فرق جاهزة",
+    "svc.bundles.title": "أو ابدأ بفريق جاهز.",
+    "svc.bundles.sub": "تركيبات شائعة، مجمّعة بسعر شهري أقل من توظيف كل دور على حدة.",
+    "svc.setup.tag": "إعداد لمرة واحدة",
+    "svc.setup.p": "يتطلّب معظم موظفي الذكاء الاصطناعي إعداداً لمرة واحدة بحسب التكاملات وسير العمل وقواعد العمل. نؤكّد ذلك معك بعد الاستشارة الأولى — دون مفاجآت.",
+    "svc.setup.s1": "إعداد بسيط", "svc.setup.a1": "د.إ 1,000 – 2,500",
+    "svc.setup.s2": "إعداد قياسي", "svc.setup.a2": "د.إ 2,500 – 5,000",
+    "svc.setup.s3": "إعداد متقدّم", "svc.setup.a3": "حسب الطلب",
+    "svc.start.big": "ابدأ بـ<span class=\"one\">واحد</span>.",
+    "svc.start.h": "لا تحتاج إلى تحوّل كامل من اليوم الأول.",
+    "svc.start.p": "يبدأ معظم العملاء بموظف ذكاء اصطناعي واحد — عادةً ردود العملاء أو الحجوزات أو متابعة المبيعات. وعندما يثبت فائدته، نضيف الدور التالي. بهدوء وتروٍّ، تعييناً واحداً في كل مرة.",
+    "svc.final.eyebrow": "عندما تكون مستعداً",
+    "svc.final.h": "غير متأكد من موظف الذكاء الاصطناعي الذي تحتاجه أولاً؟",
+    "svc.final.p": "أخبرنا عن عملك وسنحدّد أول دور ذكاء اصطناعي يستحق البناء — في محادثة قصيرة، بلا عروض تقديمية.",
+    "svc.bar.count": "موظّف ذكاء اصطناعي في خطتك",
+    "svc.bar.clear": "مسح",
+    "svc.bar.review": "راجع خطتي ←",
+    "svc.per": "/شهرياً"
+  };
+
+  /* ----- i18n engine ----- */
+  var i18nRoot = document.documentElement;
+  var enTitle = document.title;
+  function applyLang(l) {
+    LANG = l;
+    i18nRoot.lang = l;
+    i18nRoot.dir = (l === 'ar') ? 'rtl' : 'ltr';
+    document.title = (l === 'ar' && AR['__title']) ? AR['__title'] : enTitle;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (el) {
+      var key = el.getAttribute('data-i18n');
+      if (el.getAttribute('data-i18n-html')) {
+        if (el.__enHtml == null) el.__enHtml = el.innerHTML;
+        el.innerHTML = (l === 'ar' && AR[key] != null) ? AR[key] : el.__enHtml;
+      } else {
+        if (el.__en == null) el.__en = el.textContent;
+        el.textContent = (l === 'ar' && AR[key] != null) ? AR[key] : el.__en;
+      }
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.lang-switch button'), function (b) {
+      b.classList.toggle('on', b.dataset.lang === l);
+    });
+    try { localStorage.setItem('lekt-lang', l); } catch (e) {}
+    renderTabs();
+    renderGrid();
+    renderBundles();
+    renderBar();
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.lang-switch button'), function (b) {
+    b.addEventListener('click', function () { applyLang(b.dataset.lang); });
+  });
+
+  var savedLang = 'en';
+  try { savedLang = localStorage.getItem('lekt-lang') || 'en'; } catch (e) {}
+  applyLang(savedLang);
+</script>
+
+<script>
+  (function () {
+    var menu = document.getElementById('mobileMenu');
+    var toggle = document.getElementById('navToggle');
+    if (!menu || !toggle) return;
+    function open() {
+      menu.classList.add('open');
+      document.body.classList.add('menu-open');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+    function close() {
+      menu.classList.remove('open');
+      document.body.classList.remove('menu-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    toggle.addEventListener('click', open);
+    Array.prototype.forEach.call(menu.querySelectorAll('[data-close]'), function (el) { el.addEventListener('click', close); });
+    Array.prototype.forEach.call(menu.querySelectorAll('.mm-links a'), function (a) { a.addEventListener('click', close); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menu.classList.contains('open')) close(); });
+  })();
 </script>
 
 </body>

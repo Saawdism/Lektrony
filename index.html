@@ -6,7 +6,7 @@
 <title>LEKTrony, AI Automation Agency, UAE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
     --paper:    #f7f3e8;       /* warm cream paper */
@@ -54,6 +54,7 @@
     min-height: 100vh;
   }
   /* Subtle paper-grain overlay (entire page) */
+  body.menu-open { overflow: hidden; }
   body::before {
     content: "";
     position: fixed; inset: 0;
@@ -164,6 +165,97 @@
     cursor: pointer;
   }
   .navlinks li:hover { background: var(--paper-2); color: var(--ink); }
+
+  /* ---------- Hamburger toggle ---------- */
+  .nav-toggle {
+    display: none;
+    width: 42px; height: 42px;
+    align-items: center; justify-content: center;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 9px;
+    color: var(--ink);
+  }
+  .nav-toggle:hover { background: var(--paper-2); border-color: var(--ink-3); }
+  .nav-toggle .bars { position: relative; width: 19px; height: 13px; }
+  .nav-toggle .bars i {
+    position: absolute; left: 0; width: 100%; height: 1.6px;
+    background: currentColor; border-radius: 2px;
+  }
+  .nav-toggle .bars i:nth-child(1) { top: 0; }
+  .nav-toggle .bars i:nth-child(2) { top: 5.7px; }
+  .nav-toggle .bars i:nth-child(3) { top: 11.4px; }
+
+  /* ---------- Mobile slide-in menu ---------- */
+  .mobile-menu { position: fixed; inset: 0; z-index: 100; visibility: hidden; }
+  .mobile-menu.open { visibility: visible; }
+  .mm-scrim {
+    position: absolute; inset: 0;
+    background: rgba(26, 24, 20, 0.42);
+    -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+    opacity: 0; transition: opacity .34s ease;
+  }
+  .mobile-menu.open .mm-scrim { opacity: 1; }
+  .mm-panel {
+    position: absolute; top: 0; right: 0;
+    height: 100%; width: min(84vw, 372px);
+    background: var(--paper);
+    border-left: 1px solid var(--line);
+    box-shadow: -24px 0 60px -30px rgba(26,24,20,0.45);
+    display: flex; flex-direction: column;
+    padding: 18px 20px calc(24px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(100%);
+    transition: transform .4s cubic-bezier(.22,.61,.36,1);
+    overflow: hidden;
+  }
+  .mm-panel::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='ng2'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1  0 0 0 0 0.08  0 0 0 0 0.05  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(#ng2)'/></svg>");
+    background-size: 220px 220px; opacity: 0.3; mix-blend-mode: multiply;
+  }
+  .mm-panel::after {
+    content: ""; position: absolute; top: -120px; right: -120px;
+    width: 320px; height: 320px; pointer-events: none; z-index: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(245,200,74,0.20) 0%, transparent 68%);
+  }
+  .mobile-menu.open .mm-panel { transform: translateX(0); }
+  .mm-panel > * { position: relative; z-index: 1; }
+  .mm-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 0; }
+  .mm-close {
+    width: 40px; height: 40px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line); background: var(--surface);
+    border-radius: 9px; color: var(--ink-2);
+  }
+  .mm-close:hover { background: var(--paper-2); color: var(--ink); }
+  .mm-links { margin-top: 26px; display: flex; flex-direction: column; gap: 4px; }
+  .mm-links a {
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 58px; padding: 14px 16px;
+    border-radius: 11px;
+    font-size: 21px; font-weight: 400; letter-spacing: -0.02em;
+    color: var(--ink-2);
+    transition: background .18s ease, color .18s ease, transform .42s cubic-bezier(.22,.61,.36,1), opacity .42s ease;
+    opacity: 0; transform: translateX(14px);
+  }
+  .mobile-menu.open .mm-links a { opacity: 1; transform: translateX(0); }
+  .mobile-menu.open .mm-links a:nth-child(1) { transition-delay: .08s; }
+  .mobile-menu.open .mm-links a:nth-child(2) { transition-delay: .13s; }
+  .mobile-menu.open .mm-links a:nth-child(3) { transition-delay: .18s; }
+  .mobile-menu.open .mm-links a:nth-child(4) { transition-delay: .23s; }
+  .mm-links a:hover { background: var(--paper-2); color: var(--ink); }
+  .mm-links a.active { background: var(--accent-soft); color: var(--ink); }
+  .mm-links a .mm-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); opacity: 0; transition: opacity .18s ease; }
+  .mm-links a.active .mm-dot { opacity: 1; }
+  .mm-actions { margin-top: auto; display: flex; flex-direction: column; gap: 9px; padding-top: 24px; }
+  .mm-actions .btn { padding: 13px 16px; font-size: 14.5px; }
+  .mm-foot {
+    margin-top: 18px; padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: flex; align-items: center; gap: 8px;
+    color: var(--muted); font-size: 10.5px;
+    text-transform: none; letter-spacing: 0.02em;
+  }
   .nav-progress {
     display: flex; align-items: center; gap: 8px;
     padding: 5px 10px;
@@ -230,13 +322,13 @@
   .hero-copy { padding-bottom: 56px; max-width: none; }
   .hero-title {
     font-family: 'Sora', sans-serif;
-    font-size: clamp(40px, 5.8vw, 72px);
+    font-size: clamp(34px, 5.4vw, 64px);
     letter-spacing: -0.04em;
     margin-top: 32px;
     line-height: 1.02;
     font-weight: 300;
     color: var(--ink);
-    white-space: nowrap;
+    white-space: normal;
     overflow: visible;
     min-height: 1.05em;
   }
@@ -1043,6 +1135,55 @@
   .footer-links span { color: var(--ink-2); font-size: 13.5px; cursor: pointer; }
   .footer-links span:hover { color: var(--ink); }
 
+  /* ---------- Language switch ---------- */
+  .lang-switch {
+    display: inline-flex; align-items: center;
+    border: 1px solid var(--line); border-radius: 999px;
+    background: var(--surface); padding: 2px; gap: 2px;
+  }
+  .lang-switch button {
+    width: 30px; height: 30px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; background: transparent; color: var(--ink-3);
+    border-radius: 999px; font-size: 15px; line-height: 1; cursor: pointer;
+    font-family: 'Sora', sans-serif;
+    transition: background .15s ease, color .15s ease;
+  }
+  .lang-switch button[data-lang="ar"] { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 16px; }
+  .lang-switch button:hover { color: var(--ink); }
+  .lang-switch button.on { background: var(--ink); color: var(--paper); }
+  .mm-lang { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+  .mm-lang .lbl { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* ---------- RTL (Arabic) ---------- */
+  [dir="rtl"] body, [dir="rtl"] .lang-switch button[data-lang="ar"] { font-family: 'IBM Plex Sans Arabic', 'Sora', system-ui, sans-serif; }
+  [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] .hero-title, [dir="rtl"] .emp-title, [dir="rtl"] .sec-title { font-family: 'IBM Plex Sans Arabic', 'Sora', sans-serif; letter-spacing: 0; }
+  [dir="rtl"] .anno, [dir="rtl"] .mono { font-family: 'IBM Plex Sans Arabic', 'JetBrains Mono', monospace; letter-spacing: 0; }
+  [dir="rtl"] .anno { text-transform: none; }
+  [dir="rtl"] .eyebrow { letter-spacing: 0; text-transform: none; }
+  [dir="rtl"] .hero-title { white-space: normal; line-height: 1.15; }
+  [dir="rtl"] .sec-title, [dir="rtl"] .cta-copy h2 { line-height: 1.25; }
+  [dir="rtl"] .hero-sub { max-width: none; }
+  /* chat bubbles flip */
+  [dir="rtl"] .msg .body { border-top-left-radius: 10px; border-top-right-radius: 2px; }
+  [dir="rtl"] .msg.user .body { margin-left: 0; margin-right: auto; border-top-right-radius: 10px; border-top-left-radius: 2px; }
+  [dir="rtl"] .msg-input { margin-left: 0; margin-right: 38px; }
+  [dir="rtl"] .rail-row-body { padding-left: 0; padding-right: 18px; }
+  [dir="rtl"] .emp-row, [dir="rtl"] .impact-row-card, [dir="rtl"] .integ-item { text-align: right; }
+  /* horizontal arrows point the other way in RTL */
+  [dir="rtl"] .ic-arrow svg, [dir="rtl"] .msg-input .row-actions .btn svg { transform: scaleX(-1); }
+  /* mobile menu flips to the left edge */
+  [dir="rtl"] .mm-panel {
+    right: auto; left: 0;
+    border-left: none; border-right: 1px solid var(--line);
+    box-shadow: 24px 0 60px -30px rgba(26,24,20,0.45);
+    transform: translateX(-100%);
+  }
+  [dir="rtl"] .mm-panel::after { right: auto; left: -120px; }
+  [dir="rtl"] .mobile-menu.open .mm-panel { transform: translateX(0); }
+  [dir="rtl"] .mm-links a { transform: translateX(-14px); }
+  [dir="rtl"] .mobile-menu.open .mm-links a { transform: translateX(0); }
+
   /* ---------- Responsive ---------- */
   @media (max-width: 1100px) {
     .shell { grid-template-columns: 1fr; }
@@ -1050,7 +1191,11 @@
     .impact-grid { grid-template-columns: repeat(2, 1fr); }
     .cta-shell { grid-template-columns: 1fr; }
     .nav-progress { display: none; }
+  }
+  @media (max-width: 900px) {
     .navlinks { display: none; }
+    .nav-right .desk-cta { display: none; }
+    .nav-toggle { display: inline-flex; }
   }
   @media (max-width: 1100px) {
     .rail {
@@ -1084,6 +1229,13 @@
 <script>
 /* Mid-fi v2 — UAE-grounded language, regional integrations, conservative ROI.
    Exposed on window for cross-script access. */
+
+/* ---- i18n bootstrap (LANG fixed per load; toggle reloads) ---- */
+var LANG = (function(){ try { return localStorage.getItem('lekt-lang') || 'en'; } catch(e) { return 'en'; } })();
+window.__LANG = LANG;
+(function(){ var r = document.documentElement; r.lang = LANG; r.dir = (LANG === 'ar') ? 'rtl' : 'ltr'; if (LANG === 'ar') { try { document.title = 'LEKTrony، وكالة أتمتة الذكاء الاصطناعي، الإمارات'; } catch(e){} } })();
+function tr(en, ar){ return (window.__LANG === 'ar') ? ar : en; }
+window.tr = tr;
 
 window.INDUSTRY_LIST = [
   { id: 'restaurant', label: 'Restaurant',  hint: 'Dine-in, delivery, café' },
@@ -1275,6 +1427,145 @@ window.TEAM_SIZES = [
   { id: 'large', label: '50+',   desc: 'Multi-site',         mult: 2.2 },
 ];
 
+/* ---- Arabic data (MSA) + in-place localizer ---- */
+window.__AR_DATA = {
+  industryList: {
+    restaurant: { label: 'مطعم', hint: 'تناول في المكان، توصيل، مقهى' },
+    barbershop: { label: 'صالون', hint: 'حلاقة، تجميل، سبا' },
+    clinic:     { label: 'عيادة', hint: 'أسنان، جلدية، طب عام، تجميل' },
+    ecommerce:  { label: 'متجر إلكتروني', hint: 'بائعو إنستغرام وواتساب' },
+    realestate: { label: 'عقارات', hint: 'وسطاء، مطوّرون' },
+    fitness:    { label: 'لياقة', hint: 'صالة، استوديو، حصص' }
+  },
+  industries: {
+    restaurant: {
+      name: 'مطعم',
+      blurb: 'معظم المطاعم التي نعمل معها تفقد 1 من كل 3 استفسارات بعد انتهاء دوام فريقها.',
+      pains: {
+        'missed-msgs': { label: 'رسائل واتساب فائتة', desc: 'تصل الاستفسارات بعد ساعات عمل الموظفين' },
+        'manual-book': { label: 'حجوزات يدوية', desc: 'يقضي المضيف ساعات على الهاتف' },
+        'no-shows':    { label: 'التخلّف عن الحضور', desc: 'طاولات محجوزة لا تُشغَل أبداً' },
+        'follow-up':   { label: 'متابعة الضيوف', desc: 'لا يوجد نظام لإعادة الزبائن الدائمين' }
+      },
+      autos: {
+        'booking-asst': { title: 'مساعد حجوزات بالذكاء الاصطناعي', what: 'يستقبل الحجوزات عبر واتساب وإنستغرام، ليلاً ونهاراً. يؤكّد ويعدّل ويتعامل مع الطلبات الخاصة.', kpi: 'يوفّر نحو 18 ساعة أسبوعياً' },
+        'reminders':    { title: 'تذكيرات تلقائية', what: 'يؤكّد الحجوزات قبل يوم. وإذا تعذّر حضور الضيف، تُعرض الطاولة على قائمة الانتظار.', kpi: 'يقلّل التخلّف عن الحضور بنحو 40%' },
+        'follow-up':    { title: 'متابعة الضيوف', what: 'رسالة قصيرة ودودة بعد أسبوع من الزيارة. تدعوهم للعودة وتطلب رأيهم.', kpi: 'يُعيد نحو 1 من كل 5 ضيوف' }
+      }
+    },
+    barbershop: {
+      name: 'صالون',
+      blurb: 'تدير الصالونات دفتر مواعيدها بالكامل عبر واتساب. ومع نظام مناسب، يستعيد الفريق أمسياته.',
+      pains: {
+        'manual-book': { label: 'حجوزات يدوية', desc: 'شخص واحد على واتساب طوال اليوم' },
+        'missed-msgs': { label: 'رسائل إنستغرام فائتة', desc: 'يراسل عملاء جدد ولا يتلقّون رداً' },
+        'no-shows':    { label: 'التخلّف عن الحضور', desc: 'الكراسي الفارغة تكلّف مالاً حقيقياً' },
+        'rebook':      { label: 'إعادة حجز الدائمين', desc: 'لا أحد يذكّرهم بالعودة' }
+      },
+      autos: {
+        'booking-asst': { title: 'مساعد حجوزات بالذكاء الاصطناعي', what: 'يحجز المواعيد عبر واتساب وإنستغرام. يعرف تقويم فريقك وخدماتك وأسعارك.', kpi: 'يوفّر نحو 20 ساعة أسبوعياً' },
+        'reminders':    { title: 'تذكيرات المواعيد', what: 'يرسل تنبيهاً ودوداً قبل يوم. يؤكّد الحضور ويعيد جدولة الإلغاءات.', kpi: 'يقلّل التخلّف عن الحضور بنحو الثلث' },
+        'rebook':       { title: 'تنبيهات إعادة الحجز', what: 'بعد ثلاثة إلى أربعة أسابيع من آخر زيارة، رسالة بنقرة واحدة لحجز الموعد التالي.', kpi: 'يرفع الزيارات المتكررة بنحو 25%' }
+      }
+    },
+    clinic: {
+      name: 'عيادة',
+      blurb: 'تصل معظم أسئلة المرضى بعد ساعات العمل. موظّف استقبال بالذكاء الاصطناعي يلتقطها جميعاً.',
+      pains: {
+        'after-hours': { label: 'أسئلة خارج الدوام', desc: 'تصل معظم رسائل المرضى مساءً' },
+        'repetitive':  { label: 'الأسئلة نفسها طوال اليوم', desc: 'يجيب الاستقبال عن العشرة أمور نفسها' },
+        'no-shows':    { label: 'التخلّف عن المواعيد', desc: 'ينسى المرضى؛ يتّصل الاستقبال للتذكير' },
+        'follow-up':   { label: 'متابعة المرضى', desc: 'الزيارات السنوية غير مجدولة' }
+      },
+      autos: {
+        'receptionist': { title: 'موظّف استقبال بالذكاء الاصطناعي', what: 'يجيب عن أسئلة المرضى، ويحجز ويعيد جدولة المواعيد، ويعرف متى يصعّد الأمر إلى الطبيب.', kpi: 'يوفّر للاستقبال نحو 30 ساعة أسبوعياً' },
+        'reminders':    { title: 'تذكيرات المواعيد', what: 'يؤكّد قبل يوم. يعيد الجدولة أو يملأ الموعد إذا ألغى المريض.', kpi: 'يقلّل التخلّف عن الحضور بنحو 50%' },
+        'recall':       { title: 'الاستدعاء السنوي', what: 'يذكّر المرضى بموعد فحصهم السنوي. نقرة واحدة للحجز.', kpi: 'يرفع حجوزات الاستدعاء بنحو 30%' }
+      }
+    },
+    ecommerce: {
+      name: 'متجر إلكتروني',
+      blurb: 'يسأل معظم المتسوّقين في الإمارات قبل الشراء، عبر واتساب أو إنستغرام. ردّ بسرعة وإلا خسرتهم.',
+      pains: {
+        'missed-msgs': { label: 'تراكم رسائل إنستغرام', desc: 'الإعلانات تجلب رسائل يصعب مواكبتها' },
+        'slow-replies':{ label: 'بطء الرد على العملاء', desc: 'يسأل المشترون ثم يذهبون إلى منافس' },
+        'abandoned':   { label: 'سلال متروكة', desc: 'يضيف المتسوّقون إلى السلة ثم يختفون' },
+        'support':     { label: 'أسئلة العملاء المتكررة', desc: '«أين طلبي؟» طوال اليوم' }
+      },
+      autos: {
+        'order-asst':   { title: 'مساعد متجر بالذكاء الاصطناعي', what: 'يجيب عن أسئلة ما قبل الشراء على واتساب وإنستغرام. المقاسات والمخزون والتوصيل والأسعار. ويُتمّ البيع.', kpi: 'يقلّص وقت الرد من ساعات إلى ثوانٍ' },
+        'basket-nudge': { title: 'تذكيرات السلة', what: 'متابعة قصيرة عبر واتساب عند إضافة منتج للسلة دون إتمام الشراء، مع رابط للدفع.', kpi: 'يستعيد نحو 15% من السلال المتروكة' },
+        'order-status': { title: 'مساعد حالة الطلب', what: 'يتعامل تلقائياً مع كل رسالة «أين طلبي؟». يعرف شركات الشحن لديك.', kpi: 'يقلّل عبء الدعم إلى النصف' }
+      }
+    },
+    realestate: {
+      name: 'عقارات',
+      blurb: 'في وساطة دبي، الأسرع في الرد هو الفائز عادةً. الذكاء الاصطناعي يرد خلال أقل من 30 ثانية، في كل مرة.',
+      pains: {
+        'slow-replies':{ label: 'بطء الرد على العملاء المحتملين', desc: 'من يرد أولاً يفوز عادةً' },
+        'qualifying':  { label: 'تأهيل المشترين', desc: 'يهدر الوسطاء ساعات على عملاء ضعفاء' },
+        'viewings':    { label: 'حجز المعاينات', desc: 'أخذ وردّ لا ينتهي حول المواعيد' },
+        'follow-up':   { label: 'متابعة العملاء المحتملين', desc: 'يبرد العملاء بينما أنت نائم' }
+      },
+      autos: {
+        'first-reply': { title: 'مستجيب أول بالذكاء الاصطناعي', what: 'يرد على كل استفسار جديد خلال أقل من 30 ثانية، في أي وقت. يطرح الأسئلة الصحيحة ويحوّل العملاء الجادّين إلى الوسيط المناسب.', kpi: 'نحو 4 أضعاف من العملاء يتحوّلون إلى اجتماعات' },
+        'viewing':     { title: 'منظّم المعاينات', what: 'يجد الموعد التالي في تقويم الوسيط، ويرسل الموقع، ويؤكّد مع المشتري.', kpi: 'نحو 12 ساعة أسبوعياً تعود لكل وسيط' },
+        'follow-up':   { title: 'متابعة العملاء المحتملين', what: 'بضع رسائل ودودة على مدى أسبوعين للعملاء الذين توقّفوا عن الرد. تعيد إيقاظهم.', kpi: 'يُعيد نحو 1 من كل 6 عملاء باردين' }
+      }
+    },
+    fitness: {
+      name: 'استوديو لياقة',
+      blurb: 'الحصص الممتلئة تدفع الإيجار. الذكاء الاصطناعي يبقيها ممتلئة، حتى عند انسحاب عضو في اللحظة الأخيرة.',
+      pains: {
+        'class-fill':  { label: 'أماكن شاغرة في الحصص', desc: 'الانسحابات اللحظية تقضي على الهامش' },
+        'follow-up':   { label: 'متابعة التجربة', desc: 'التجارب لا تتحوّل إلى عضويات' },
+        'missed-msgs': { label: 'رسائل إنستغرام دون رد', desc: 'تتراكم الاستفسارات من المقاطع' },
+        'rebook':      { label: 'إعادة الأعضاء المنقطعين', desc: 'يبتعد الأعضاء بهدوء' }
+      },
+      autos: {
+        'class-fill':   { title: 'تعبئة قائمة الانتظار تلقائياً', what: 'عند إلغاء عضو، تصل قائمة الانتظار رسالة عبر واتساب. أول من يؤكّد يحصل على المكان.', kpi: 'ترفع معدّل امتلاء الحصص بنحو 20%' },
+        'trial':        { title: 'رعاية الأعضاء التجريبيين', what: 'تسلسل قصير ودود خلال الأسبوع الأول. يجيب عن الأسئلة، ويحجز الحصة التالية، ويعرض العضوية.', kpi: 'نحو 1 من كل 3 تجارب إضافية تتحوّل' },
+        'booking-asst': { title: 'مساعد حجوزات بالذكاء الاصطناعي', what: 'يستقبل حجوزات الحصص على إنستغرام وواتساب. يتزامن مع جدولك.', kpi: 'يوفّر نحو 15 ساعة أسبوعياً' }
+      }
+    }
+  },
+  integrations: {
+    whatsapp:  { label: 'واتساب للأعمال', blurb: 'حيث يتحدّث إليك معظم عملاء الإمارات فعلاً', cat: 'القنوات' },
+    instagram: { label: 'إنستغرام', blurb: 'الرسائل والتعليقات وردود القصص', cat: 'القنوات' },
+    sheets:    { label: 'جداول جوجل', blurb: 'حيث يحتفظ فريقك بالأرقام أصلاً', cat: 'العمليات' },
+    gcal:      { label: 'تقويم جوجل', blurb: 'الحجوزات والمعاينات والحصص', cat: 'العمليات' },
+    ziina:     { label: 'زينة', blurb: 'روابط دفع محلية', cat: 'المدفوعات' },
+    tabby:     { label: 'تابي', blurb: 'قسّمها على 4 للمتاجر الإلكترونية', cat: 'المدفوعات' },
+    tamara:    { label: 'تمارا', blurb: 'اشترِ الآن وادفع لاحقاً', cat: 'المدفوعات' }
+  },
+  channels: { whatsapp: 'واتساب', instagram: 'إنستغرام', phone: 'الهاتف', web: 'الموقع الإلكتروني', portals: 'بوابات العقارات' },
+  teams: { solo: { desc: 'فريق صغير' }, small: { desc: 'فريق ينمو' }, mid: { desc: 'عملية متوسطة الحجم' }, large: { desc: 'متعدّد الفروع' } },
+  flows: {
+    'booking-asst': { label: 'مساعد الحجوزات', nodes: { t: { label: 'رسالة عميل', detail: '«أبا طاولة لـ4 الليلة؟»' }, p: { label: 'يفهم الطلب', detail: 'العدد · الوقت · طلبات خاصة' }, c: { label: 'يتحقّق من التقويم', detail: 'المواعيد المتاحة فقط' }, r: { label: 'يؤكّد مع الضيف', detail: 'بنبرة مكانك' }, l: { label: 'يسجّل الحجز', detail: 'بيانات الضيف · التفضيلات' } } },
+    'receptionist': { label: 'موظّف استقبال بالذكاء الاصطناعي', nodes: { t: { label: 'رسالة مريض', detail: '«أبا موعد ليزر باجر»' }, p: { label: 'يفهم الطلب', detail: 'حجز · سؤال · عاجل' }, u: { label: 'عاجل؟', detail: 'إن نعم → الطبيب المناوب' }, c: { label: 'يجد الموعد المناسب', detail: 'مع الطبيب المناسب' }, r: { label: 'يحجز ويؤكّد', detail: 'يرسل تعليمات التحضير' } } },
+    'order-asst': { label: 'مساعد متجر بالذكاء الاصطناعي', nodes: { t: { label: 'رسالة متسوّق', detail: '«شي هالقميص ميديم؟»' }, p: { label: 'يقرأ السؤال', detail: 'المنتج · المقاس · المخزون' }, c: { label: 'يتحقّق من الكتالوج', detail: 'المنتجات · المخزون · السعر' }, r: { label: 'يجيب مع رابط', detail: 'المنتج + الدفع' }, p2: { label: 'يعرض التقسيط على 4', detail: 'تابي · تمارا · زينة' } } },
+    'first-reply': { label: 'مستجيب أول بالذكاء الاصطناعي', nodes: { t: { label: 'استفسار عقاري', detail: 'من واتساب · بوابة · إنستغرام' }, r: { label: 'يرد خلال ثوانٍ', detail: '24/7 · متعدّد اللغات' }, q: { label: 'يطرح الأسئلة الصحيحة', detail: 'الميزانية · المنطقة · التوقيت' }, s: { label: 'عميل جادّ؟', detail: 'مع ملخّص + الإجراء التالي' }, n: { label: 'يحوّل إلى الوسيط', detail: 'نقرة واحدة لتولّي الأمر' } } },
+    'salon-book': { label: 'مساعد الحجوزات', nodes: { t: { label: 'رسالة عميل', detail: '«عندكم موعد الساعة 4؟ أبا أسوّي شعري»' }, p: { label: 'يفهم الطلب', detail: 'الخدمة · المصفّف · الوقت' }, c: { label: 'يتحقّق من التقويم', detail: 'حسب المصفّف' }, r: { label: 'يؤكّد مع العميل', detail: 'بنبرة صالونك' }, l: { label: 'يسجّل الحجز', detail: 'العميل · الخدمة · ملاحظات' } } },
+    'fitness-book': { label: 'حجز الحصص', nodes: { t: { label: 'رسالة عضو', detail: '«بكم الاشتراك لشهر واحد؟»' }, p: { label: 'يقرأ الطلب', detail: 'الحصة · الوقت · العضو' }, c: { label: 'يتحقّق من سعة الحصة', detail: 'الأماكن المتبقية مباشرة' }, r: { label: 'يحجز ويؤكّد', detail: 'يضيف إلى قائمة الحصة' }, m: { label: 'يرسل تذكيراً', detail: 'قبل يوم' } } }
+  }
+};
+
+(function localizeData(){
+  if (window.__LANG !== 'ar') return;
+  var D = window.__AR_DATA;
+  window.INDUSTRY_LIST.forEach(function(it){ var o = D.industryList[it.id]; if (o) { it.label = o.label; it.hint = o.hint; } });
+  Object.keys(window.INDUSTRIES).forEach(function(k){
+    var ind = window.INDUSTRIES[k], o = D.industries[k]; if (!o) return;
+    if (o.name) ind.name = o.name;
+    if (o.blurb) ind.blurb = o.blurb;
+    (ind.pains || []).forEach(function(p){ if (o.pains && o.pains[p.id]) { p.label = o.pains[p.id].label; p.desc = o.pains[p.id].desc; } });
+    (ind.automations || []).forEach(function(a){ if (o.autos && o.autos[a.id]) { a.title = o.autos[a.id].title; a.what = o.autos[a.id].what; a.kpi = o.autos[a.id].kpi; } });
+  });
+  Object.keys(window.INTEGRATIONS).forEach(function(k){ var o = D.integrations[k]; if (o) { var it = window.INTEGRATIONS[k]; it.label = o.label; it.blurb = o.blurb; it.cat = o.cat; } });
+  Object.keys(window.CHANNEL_LABELS).forEach(function(k){ if (D.channels[k]) window.CHANNEL_LABELS[k] = D.channels[k]; });
+  window.TEAM_SIZES.forEach(function(t){ var o = D.teams[t.id]; if (o && o.desc) t.desc = o.desc; });
+})();
+
 </script>
 
 <script type="text/babel">
@@ -1301,8 +1592,20 @@ function _Icon({ name, size = 18, stroke = 1.5 }) {
   return <svg {...props}>{paths[name] || null}</svg>;
 }
 
-/* ====================================================================== */
-/* Section header — calmer, no eyebrow chrome unless live                 */
+/* Brand glyphs for integrations (WhatsApp / Instagram / Google / Ziina); else monogram */
+function BrandMark({ k, tag, size = 20 }) {
+  const s = size;
+  if (k === 'whatsapp')
+    return <svg width={s} height={s} viewBox="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M12.04 2.5c-5.27 0-9.55 4.28-9.55 9.55 0 1.68.44 3.32 1.28 4.77L2.4 21.5l4.8-1.26a9.5 9.5 0 0 0 4.84 1.32c5.27 0 9.55-4.28 9.55-9.55s-4.28-9.51-9.55-9.51zm0 1.67c4.35 0 7.88 3.53 7.88 7.88s-3.53 7.88-7.88 7.88a7.85 7.85 0 0 1-4.18-1.2l-.3-.18-2.85.75.76-2.78-.2-.29a7.84 7.84 0 0 1-1.2-4.18c0-4.35 3.53-7.88 7.97-7.88zm4.55 9.96c-.25-.13-1.47-.72-1.69-.8-.23-.09-.39-.13-.56.12-.16.25-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.16.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.42l-.48-.01c-.16 0-.42.06-.64.31-.22.25-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.39 1.37.5.57.18 1.1.16 1.51.1.46-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.47-.29z"/></svg>;
+  if (k === 'instagram')
+    return <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#E1306C" strokeWidth="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.2" cy="6.8" r="1.2" fill="#E1306C" stroke="none" /></svg>;
+  if (k === 'sheets' || k === 'gcal' || k === 'google')
+    return <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.23c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.22-4.74 3.22-8.09z" /><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.68l-3.56-2.76c-.99.66-2.25 1.06-3.72 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z" /><path fill="#FBBC05" d="M5.84 14.09a6.6 6.6 0 0 1 0-4.18V7.07H2.18a11 11 0 0 0 0 9.86l3.66-2.84z" /><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z" /></svg>;
+  if (k === 'ziina')
+    return <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#5B3DF5" /><path d="M8 8h8v1.8L10.6 16H16v2H8v-1.8L13.4 10H8z" fill="#fff" /></svg>;
+  return <span className="mono">{tag}</span>;
+}
+window.__Brand = BrandMark;
 /* ====================================================================== */
 
 function SectionHead({ num, eyebrow, title, sub, live }) {
@@ -1311,7 +1614,7 @@ function SectionHead({ num, eyebrow, title, sub, live }) {
       <div className="sec-tag">
         <span className="mono num">{num}</span>
         <span className="anno">{eyebrow}</span>
-        {live && <span className="live-pill"><span className="dot dot-live" />adapts to your plan</span>}
+        {live && <span className="live-pill"><span className="dot dot-live" />{tr('adapts to your plan', 'يتكيّف مع خطتك')}</span>}
       </div>
       <h2 className="sec-title">{title}</h2>
       {sub && <p className="sec-sub">{sub}</p>}
@@ -1327,9 +1630,9 @@ function AITeam({ plan }) {
   if (!plan.ready) return null;
   return (
     <section className="sec" data-screen-label="01 AI team">
-      <SectionHead num="01" eyebrow={`Your ${plan.industry.name.toLowerCase()} AI team`} live
-      title="Your team's next hires. Just in software."
-      sub={`Three roles, ranked by impact. Each takes work that your team does today and runs it 24 / 7.`} />
+      <SectionHead num="01" eyebrow={tr(`Your ${plan.industry.name.toLowerCase()} AI team`, `فريق الذكاء الاصطناعي لـ${plan.industry.name}`)} live
+      title={tr("Your team's next hires. Just in software.", 'تعييناتك التالية. لكن في صورة برمجيات.')}
+      sub={tr('Three roles, ranked by impact. Each takes work that your team does today and runs it 24 / 7.', 'ثلاثة أدوار، مرتّبة حسب الأثر. يتولّى كلٌّ منها عملاً يقوم به فريقك اليوم ويديره على مدار الساعة.')} />
 
       <ol className="ai-team">
         {plan.automations.map((a, i) =>
@@ -1338,7 +1641,7 @@ function AITeam({ plan }) {
             <div className="emp-main">
               <div className="emp-head">
                 <h3 className="emp-title">{a.title}</h3>
-                <span className={_cls('emp-role', a.role === 'AI assistant' ? 'role-ai' : 'role-flow')}>{a.role}</span>
+                <span className={_cls('emp-role', a.role === 'AI assistant' ? 'role-ai' : 'role-flow')}>{tr(a.role, a.role === 'AI assistant' ? 'مساعد ذكاء اصطناعي' : 'أتمتة')}</span>
               </div>
               <p className="emp-what">{a.what}</p>
               <div className="emp-kpi">{a.kpi}</div>
@@ -1427,6 +1730,18 @@ const FLOWS_BY_INDUSTRY = {
   fitness: 'fitness-book'
 };
 
+/* Localize flow labels/details when Arabic */
+if (window.__LANG === 'ar' && window.__AR_DATA && window.__AR_DATA.flows) {
+  Object.keys(FLOWS).forEach(function (k) {
+    const o = window.__AR_DATA.flows[k];
+    if (!o) return;
+    if (o.label) FLOWS[k].label = o.label;
+    FLOWS[k].nodes.forEach(function (n) {
+      if (o.nodes && o.nodes[n.id]) { n.label = o.nodes[n.id].label; n.detail = o.nodes[n.id].detail; }
+    });
+  });
+}
+
 function Workflow({ plan }) {
   const [playing, setPlaying] = useState2(true);
   const [tick, setTick] = useState2(0);
@@ -1444,9 +1759,9 @@ function Workflow({ plan }) {
 
   return (
     <section className="sec" data-screen-label="02 Workflow">
-      <SectionHead num="02" eyebrow="How it works"
-      title={`A look inside your ${primary.title.toLowerCase()}.`}
-      sub="A real message comes in. Here's what happens, end to end. Hover to pause." />
+      <SectionHead num="02" eyebrow={tr('How it works', 'كيف يعمل')}
+      title={tr(`A look inside your ${primary.title.toLowerCase()}.`, `نظرة داخل ${primary.title}.`)}
+      sub={tr("A real message comes in. Here's what happens, end to end. Hover to pause.", 'تصل رسالة حقيقية. إليك ما يحدث، من البداية إلى النهاية. مرّر المؤشّر للإيقاف المؤقت.')} />
 
       <div className="flow-shell" onMouseEnter={() => setPlaying(false)} onMouseLeave={() => setPlaying(true)}>
         <div className="flow-canvas">
@@ -1461,10 +1776,10 @@ function Workflow({ plan }) {
         </div>
 
         <div className="flow-legend">
-          <span className="legend-bit"><span className="legend-sw trigger" />Customer</span>
-          <span className="legend-bit"><span className="legend-sw ai" />AI step</span>
-          <span className="legend-bit"><span className="legend-sw tool" />Tool</span>
-          <span className="legend-bit"><span className="legend-sw logic" />Decision</span>
+          <span className="legend-bit"><span className="legend-sw trigger" />{tr('Customer', 'العميل')}</span>
+          <span className="legend-bit"><span className="legend-sw ai" />{tr('AI step', 'خطوة ذكاء اصطناعي')}</span>
+          <span className="legend-bit"><span className="legend-sw tool" />{tr('Tool', 'أداة')}</span>
+          <span className="legend-bit"><span className="legend-sw logic" />{tr('Decision', 'قرار')}</span>
         </div>
       </div>
     </section>);
@@ -1476,7 +1791,7 @@ function FlowNode({ node, active }) {
     <div className={_cls('flow-node', `node-${node.kind}`, active && 'active')}>
       <div className="node-top">
         <span className="node-tool mono">{node.tool}</span>
-        <span className="node-kind anno">{node.kind === 'trigger' ? 'Customer' : node.kind === 'ai' ? 'AI' : node.kind === 'logic' ? 'Decision' : 'Tool'}</span>
+        <span className="node-kind anno">{node.kind === 'trigger' ? tr('Customer', 'العميل') : node.kind === 'ai' ? tr('AI', 'ذكاء اصطناعي') : node.kind === 'logic' ? tr('Decision', 'قرار') : tr('Tool', 'أداة')}</span>
       </div>
       <b className="node-label">{node.label}</b>
       <span className="node-detail">{node.detail}</span>
@@ -1507,33 +1822,33 @@ function Impact({ plan }) {
 
   return (
     <section className="sec impact-sec" data-screen-label="03 Impact">
-      <SectionHead num="03" eyebrow="Operational impact" live
-      title="What this changes, in plain numbers."
-      sub="Based on what we typically see for a UAE business of your size and industry. Conservative, not best case." />
+      <SectionHead num="03" eyebrow={tr('Operational impact', 'الأثر التشغيلي')} live
+      title={tr('What this changes, in plain numbers.', 'ما الذي يتغيّر، بأرقام واضحة.')}
+      sub={tr('Based on what we typically see for a UAE business of your size and industry. Conservative, not best case.', 'بناءً على ما نراه عادةً لشركة إماراتية بحجمك وقطاعك. تقديرات متحفّظة، لا أفضل الحالات.')} />
 
       <div className="impact-rows">
         <ImpactRow
-          metric={`${hrs} hours`}
-          unit="every week, back to your team"
-          today={`Currently spent on manual replies, bookings, follow-ups.`}
-          after={`Automated end-to-end. Team focuses on guests, patients, customers.`} />
+          metric={tr(`${hrs} hours`, `${hrs} ساعة`)}
+          unit={tr('every week, back to your team', 'كل أسبوع، تعود إلى فريقك')}
+          today={tr(`Currently spent on manual replies, bookings, follow-ups.`, 'تُقضى حالياً في الردود والحجوزات والمتابعات اليدوية.')}
+          after={tr(`Automated end-to-end. Team focuses on guests, patients, customers.`, 'مؤتمتة من البداية إلى النهاية. يركّز الفريق على الضيوف والمرضى والعملاء.')} />
         
         <ImpactRow
-          metric={replyWith}
-          unit="reply time, day or night"
-          today={`Today: ~${Math.round(replyToday / 60)} hours on average.`}
-          after={`Every inquiry answered in under 30 seconds, at 2pm or 2am.`} />
+          metric={tr(replyWith, '< 30 ثانية')}
+          unit={tr('reply time, day or night', 'زمن الرد، ليلاً أو نهاراً')}
+          today={tr(`Today: ~${Math.round(replyToday / 60)} hours on average.`, `اليوم: نحو ${Math.round(replyToday / 60)} ساعة في المتوسّط.`)}
+          after={tr(`Every inquiry answered in under 30 seconds, at 2pm or 2am.`, 'كل استفسار يُجاب عنه خلال أقل من 30 ثانية، ظهراً أو فجراً.')} />
         
         <ImpactRow
           metric={`~${missed}`}
-          unit="messages a month that don't slip through"
-          today={`Today: arrives after hours, never gets a reply.`}
-          after={`Captured and handled. Hot ones escalated to your team.`} />
+          unit={tr('messages a month that don\'t slip through', 'رسالة شهرياً لا تفلت من بين يديك')}
+          today={tr(`Today: arrives after hours, never gets a reply.`, 'اليوم: تصل بعد الدوام ولا تتلقّى رداً أبداً.')}
+          after={tr(`Captured and handled. Hot ones escalated to your team.`, 'تُلتقط وتُعالَج. والعاجلة منها تُصعّد إلى فريقك.')} />
         
       </div>
 
       <p className="impact-fine">
-        Numbers are a working estimate based on your industry, team size, and the pain points you flagged. We refine them together on the audit call.
+        {tr('Numbers are a working estimate based on your industry, team size, and the pain points you flagged. We refine them together on the audit call.', 'الأرقام تقدير أولي بناءً على قطاعك وحجم فريقك ونقاط الألم التي حدّدتها. نحسّنها معاً في مكالمة التقييم.')}
       </p>
     </section>);
 
@@ -1548,12 +1863,12 @@ function ImpactRow({ metric, unit, today, after }) {
       </div>
       <div className="impact-compare">
         <div className="ic-col">
-          <span className="anno">Today</span>
+          <span className="anno">{tr('Today', 'اليوم')}</span>
           <p>{today}</p>
         </div>
         <div className="ic-arrow"><_Icon name="arrow" size={14} /></div>
         <div className="ic-col ic-after">
-          <span className="anno">With your AI plan</span>
+          <span className="anno">{tr('With your AI plan', 'مع خطة الذكاء الاصطناعي')}</span>
           <p>{after}</p>
         </div>
       </div>
@@ -1572,9 +1887,9 @@ function Integrations({ plan }) {
 
   return (
     <section className="sec" data-screen-label="04 Integrations">
-      <SectionHead num="04" eyebrow="Connected to your tools" live
-      title="We plug into what you already run."
-      sub="No new software for your team to learn. These are the tools your plan touches." />
+      <SectionHead num="04" eyebrow={tr('Connected to your tools', 'متّصل بأدواتك')} live
+      title={tr('We plug into what you already run.', 'نتكامل مع ما تستخدمه أصلاً.')}
+      sub={tr('No new software for your team to learn. These are the tools your plan touches.', 'لا برمجيات جديدة على فريقك تعلّمها. هذه هي الأدوات التي تلمسها خطتك.')} />
 
       <ul className="integ-list">
         {all.map((k) => {
@@ -1582,20 +1897,20 @@ function Integrations({ plan }) {
           const used = inYour.has(k);
           return (
             <li key={k} className={_cls('integ-item', used && 'in-plan')}>
-              <span className="integ-tag mono">{it.tag}</span>
+              <span className="integ-tag"><BrandMark k={k} tag={it.tag} size={20} /></span>
               <div className="integ-text">
                 <b>{it.label}</b>
                 <span className="integ-blurb">{it.blurb}</span>
               </div>
               <span className="integ-cat anno">{it.cat}</span>
-              {used && <span className="integ-flag"><_Icon name="check" size={12} />in your plan</span>}
+              {used && <span className="integ-flag"><_Icon name="check" size={12} />{tr('in your plan', 'في خطتك')}</span>}
             </li>);
 
         })}
       </ul>
 
       <p className="integ-fine">
-        Don't see what you use? We build custom connections to local systems regularly. POS, EMR, property portals, accounting.
+        {tr("Don't see what you use? We build custom connections to local systems regularly. POS, EMR, property portals, accounting.", 'لا ترى ما تستخدمه؟ نبني روابط مخصّصة للأنظمة المحلية باستمرار. نقاط البيع، السجلات الطبية، بوابات العقارات، المحاسبة.')}
       </p>
     </section>);
 
@@ -1607,33 +1922,33 @@ function Integrations({ plan }) {
 
 function FinalCTA({ plan }) {
   return (
-    <section className="sec final-cta" data-screen-label="05 Final CTA">
+    <section className="sec final-cta" id="contact" data-screen-label="05 Final CTA">
       <div className="cta-shell">
         <div className="cta-copy">
-          <span className="eyebrow"><span className="dot dot-live" /><span className="anno">When you're ready</span></span>
-          <h2>{plan.ready ? `Ship your ${plan.industry.name.toLowerCase()} AI plan.` : 'Talk to a real UAE-based AI architect.'}</h2>
-          <p>30 minutes, no slides. We bring your plan, you bring your team. You walk out with a quote and a clear yes or no.</p>
+          <span className="eyebrow"><span className="dot dot-live" /><span className="anno">{tr("When you're ready", 'عندما تكون مستعداً')}</span></span>
+          <h2>{plan.ready ? tr(`Ship your ${plan.industry.name.toLowerCase()} AI plan.`, `أطلِق خطة الذكاء الاصطناعي لـ${plan.industry.name}.`) : tr('Talk to a real UAE-based AI architect.', 'تحدّث إلى مهندس ذكاء اصطناعي حقيقي مقرّه الإمارات.')}</h2>
+          <p>{tr('30 minutes, no slides. We bring your plan, you bring your team. You walk out with a quote and a clear yes or no.', '30 دقيقة، بلا عروض تقديمية. نحضر خطتك، وتحضر فريقك. تخرج بعرض سعر وبإجابة واضحة بنعم أو لا.')}</p>
           <div className="cta-actions">
-            <button className="btn primary lg"><_Icon name="bolt" size={14} />Book the audit</button>
-            <button className="btn ghost lg"><_Icon name="chat" size={14} />WhatsApp us first</button>
+            <button className="btn primary lg"><_Icon name="bolt" size={14} />{tr('Book the audit', 'احجز جلسة التقييم')}</button>
+            <button className="btn ghost lg"><_Icon name="chat" size={14} />{tr('WhatsApp us first', 'راسلنا على واتساب أولاً')}</button>
           </div>
           <div className="cta-meta">
-            <span className="metabit"><_Icon name="check" size={12} />Reply within 2 hours</span>
-            <span className="metabit"><_Icon name="check" size={12} />No commitment</span>
-            <span className="metabit"><_Icon name="check" size={12} />Abu Dhabi-based team</span>
+            <span className="metabit"><_Icon name="check" size={12} />{tr('Reply within 2 hours', 'رد خلال ساعتين')}</span>
+            <span className="metabit"><_Icon name="check" size={12} />{tr('No commitment', 'دون أي التزام')}</span>
+            <span className="metabit"><_Icon name="check" size={12} />{tr('Abu Dhabi-based team', 'فريق مقرّه أبوظبي')}</span>
           </div>
         </div>
 
         <aside className="cta-form">
           <div className="form-head">
-            <span className="anno">Or, leave your number. We'll WhatsApp you with the plan.</span>
+            <span className="anno">{tr("Or, leave your number. We'll WhatsApp you with the plan.", 'أو اترك رقمك، وسنرسل لك الخطة عبر واتساب.')}</span>
           </div>
           <div className="form-grid">
-            <Field label="Business" placeholder="Your business name" />
-            <Field label="WhatsApp" placeholder="+971 ___ ____" />
+            <Field label={tr('Business', 'النشاط')} placeholder={tr('Your business name', 'اسم نشاطك')} />
+            <Field label={tr('WhatsApp', 'واتساب')} placeholder="+971 ___ ____" />
           </div>
-          <button className="btn primary full">Send my plan</button>
-          <span className="form-fine anno">One reply, from a person. No sequences.</span>
+          <button className="btn primary full">{tr('Send my plan', 'أرسل خطتي')}</button>
+          <span className="form-fine anno">{tr('One reply, from a person. No sequences.', 'رد واحد، من شخص حقيقي. بلا رسائل متسلسلة.')}</span>
         </aside>
       </div>
     </section>);
@@ -1666,15 +1981,15 @@ function Footer() {
               <rect x="15" y="15" width="11" height="11" rx="2" fill="currentColor" />
             </svg>
           </span>
-          <span>LEKTrony · AI operations · Abu Dhabi</span>
+          <span>{tr('LEKTrony · AI operations · Abu Dhabi', 'LEKTrony · عمليات الذكاء الاصطناعي · أبوظبي')}</span>
         </div>
         <nav className="footer-links">
-          <span>Solutions</span><span>How it works</span><span>Integrations</span><span>Contact</span>
+          <a href="index.html">{tr('Home', 'الرئيسية')}</a><a href="services.html">{tr('Services', 'الخدمات')}</a><a href="about.html">{tr('About', 'من نحن')}</a><a href="#contact">{tr('Contact', 'تواصل معنا')}</a>
         </nav>
       </div>
       <div className="footer-row faint">
-        <span className="anno">© 2026 · Privacy · Terms</span>
-        <span className="anno">MADE IN ABU DHABI · SERVING THE UAE & GCC</span>
+        <span className="anno">{tr('© 2026 · Privacy · Terms', '© 2026 · الخصوصية · الشروط')}</span>
+        <span className="anno">{tr('MADE IN ABU DHABI · SERVING THE UAE & GCC', 'صُنع في أبوظبي · نخدم الإمارات ودول الخليج')}</span>
       </div>
     </footer>);
 
@@ -1793,35 +2108,99 @@ function completionPct(a) {
 /* ====================================================================== */
 
 function Nav({ completion }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle('menu-open', menuOpen);
+    return () => document.body.classList.remove('menu-open');
+  }, [menuOpen]);
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, []);
+
+  const Logomark = () => (
+    <span className="logomark" aria-hidden="true">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect x="2" y="2" width="11" height="11" rx="2" fill="currentColor" />
+        <rect x="15" y="2" width="11" height="11" rx="2" fill="#ffd84d" />
+        <rect x="2" y="15" width="11" height="11" rx="2" fill="currentColor" />
+        <rect x="15" y="15" width="11" height="11" rx="2" fill="currentColor" />
+      </svg>
+    </span>);
+
+  const switchLang = (l) => { try { localStorage.setItem('lekt-lang', l); } catch (e) {} window.location.reload(); };
+
   return (
     <nav className="nav">
       <div className="nav-left">
-        <div className="logo">
-          <span className="logomark" aria-hidden="true">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <rect x="2" y="2" width="11" height="11" rx="2" fill="currentColor" />
-              <rect x="15" y="2" width="11" height="11" rx="2" fill="#ffd84d" />
-              <rect x="2" y="15" width="11" height="11" rx="2" fill="currentColor" />
-              <rect x="15" y="15" width="11" height="11" rx="2" fill="currentColor" />
-            </svg>
-          </span>
+        <a className="logo" href="index.html" style={{ color: 'inherit' }}>
+          <Logomark />
           <span className="logo-text">LEKTrony</span>
-          <span className="region anno">UAE</span>
-        </div>
+          <span className="region anno">{tr('UAE', 'الإمارات')}</span>
+        </a>
         <ul className="navlinks">
-          <li>How it works</li>
-          <li>Integrations</li>
-          <li><a href="services.html" style={{ color: 'inherit', textDecoration: 'none', display: 'block' }}>Services</a></li>
+          <li><a href="index.html" style={{ color: 'inherit', textDecoration: 'none', display: 'block' }}>{tr('Home', 'الرئيسية')}</a></li>
+          <li><a href="services.html" style={{ color: 'inherit', textDecoration: 'none', display: 'block' }}>{tr('Services', 'الخدمات')}</a></li>
+          <li><a href="about.html" style={{ color: 'inherit', textDecoration: 'none', display: 'block' }}>{tr('About', 'من نحن')}</a></li>
         </ul>
       </div>
       <div className="nav-right">
         <div className="nav-progress">
-          <span className="anno">Your plan</span>
+          <span className="anno">{tr('Your plan', 'خطتك')}</span>
           <div className="bar"><div className="fill" style={{ width: completion + '%' }} /></div>
           <span className="anno mono">{completion}%</span>
         </div>
-        <button className="btn ghost sm">WhatsApp us</button>
-        <button className="btn primary sm">Book a call</button>
+        <div className="lang-switch" role="group" aria-label="Language">
+          <button type="button" className={cls(window.__LANG !== 'ar' && 'on')} onClick={() => switchLang('en')} aria-label="English">A</button>
+          <button type="button" data-lang="ar" className={cls(window.__LANG === 'ar' && 'on')} onClick={() => switchLang('ar')} aria-label="العربية">ع</button>
+        </div>
+        <button className="btn ghost sm desk-cta">{tr('WhatsApp us', 'تواصل عبر واتساب')}</button>
+        <button className="btn primary sm desk-cta">{tr('Book a call', 'احجز مكالمة')}</button>
+        <button
+          className="nav-toggle"
+          aria-label="Open menu"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(true)}>
+          <span className="bars" aria-hidden="true"><i /><i /><i /></span>
+        </button>
+      </div>
+
+      <div className={cls('mobile-menu', menuOpen && 'open')} role="dialog" aria-modal="true" aria-label="Site menu">
+        <div className="mm-scrim" onClick={() => setMenuOpen(false)} />
+        <div className="mm-panel">
+          <div className="mm-head">
+            <a className="logo" href="index.html" style={{ color: 'inherit' }}>
+              <Logomark />
+              <span className="logo-text">LEKTrony</span>
+            </a>
+            <button className="mm-close" aria-label="Close menu" onClick={() => setMenuOpen(false)}>
+              <Icon name="close" size={18} />
+            </button>
+          </div>
+          <nav className="mm-links">
+            <a href="index.html" className="active" onClick={() => setMenuOpen(false)}>{tr('Home', 'الرئيسية')}<span className="mm-dot" /></a>
+            <a href="services.html" onClick={() => setMenuOpen(false)}>{tr('Services', 'الخدمات')}<span className="mm-dot" /></a>
+            <a href="about.html" onClick={() => setMenuOpen(false)}>{tr('About', 'من نحن')}<span className="mm-dot" /></a>
+            <a href="#contact" onClick={() => setMenuOpen(false)}>{tr('Contact', 'تواصل معنا')}<span className="mm-dot" /></a>
+          </nav>
+          <div className="mm-actions">
+            <button className="btn ghost full">{tr('WhatsApp us', 'تواصل عبر واتساب')}</button>
+            <button className="btn full">{tr('Book a call', 'احجز مكالمة')}</button>
+          </div>
+          <div className="mm-lang">
+            <span className="lbl">{tr('Language', 'اللغة')}</span>
+            <div className="lang-switch" role="group" aria-label="Language">
+              <button type="button" className={cls(window.__LANG !== 'ar' && 'on')} onClick={() => switchLang('en')} aria-label="English">A</button>
+              <button type="button" data-lang="ar" className={cls(window.__LANG === 'ar' && 'on')} onClick={() => switchLang('ar')} aria-label="العربية">ع</button>
+            </div>
+          </div>
+          <div className="mm-foot anno">
+            <span className="dot dot-live" /> {tr('Based in Abu Dhabi · Serving the UAE', 'مقرّنا أبوظبي · نخدم دولة الإمارات')}
+          </div>
+        </div>
       </div>
     </nav>);
 
@@ -1832,10 +2211,10 @@ function Nav({ completion }) {
 /* ====================================================================== */
 
 const STEPS = [
-{ id: 'industry', q: 'To start, what kind of business do you run?', kind: 'industry' },
-{ id: 'pains', q: 'And what takes most of your team\'s time today?', kind: 'pains', multi: true },
-{ id: 'channels', q: 'Where do most of your customers reach you?', kind: 'channels', multi: true },
-{ id: 'team', q: 'How big is your team?', kind: 'team' },
+{ id: 'industry', q: tr('To start, what kind of business do you run?', 'بدايةً، ما نوع العمل الذي تديره؟'), kind: 'industry' },
+{ id: 'pains', q: tr('And what takes most of your team\'s time today?', 'وما الذي يستهلك معظم وقت فريقك اليوم؟'), kind: 'pains', multi: true },
+{ id: 'channels', q: tr('Where do most of your customers reach you?', 'أين يتواصل معك معظم عملائك؟'), kind: 'channels', multi: true },
+{ id: 'team', q: tr('How big is your team?', 'كم حجم فريقك؟'), kind: 'team' },
 { id: 'done', q: '', kind: 'done' }];
 
 
@@ -1851,7 +2230,7 @@ function Chat({ answers, setAnswers, plan, onScrollToResults }) {
   const transcript = useMemo(() => {
     const out = [];
     out.push({ role: 'ai', kind: 'text',
-      body: 'Hello. I\'m here to map out an AI plan for your business. A short conversation, four questions. Whenever you\'re ready.' });
+      body: tr('Hello. I\'m here to map out an AI plan for your business. A short conversation, four questions. Whenever you\'re ready.', 'مرحباً. أنا هنا لأضع خطة ذكاء اصطناعي لعملك. محادثة قصيرة، أربعة أسئلة. متى ما كنت مستعداً.') });
 
     STEPS.forEach((s, i) => {
       if (i > stepIdx) return;
@@ -1910,9 +2289,9 @@ function Chat({ answers, setAnswers, plan, onScrollToResults }) {
       <div className="chat-head">
         <div className="chat-head-left">
           <span className="chat-avatar" aria-hidden="true"></span>
-          <span className="anno">AI Consultation</span>
+          <span className="anno">{tr('AI Consultation', 'استشارة بالذكاء الاصطناعي')}</span>
           <span className="chat-sep">·</span>
-          <span className="anno mono">Step {Math.min(stepIdx + 1, 4)} of 4</span>
+          <span className="anno mono">{tr('Step ' + Math.min(stepIdx + 1, 4) + ' of 4', 'الخطوة ' + Math.min(stepIdx + 1, 4) + ' من 4')}</span>
         </div>
         <div className="chat-head-right">
           <button className="iconbtn" title="Restart" onClick={() => {setStepIdx(0);setDraft({ pains: [], channels: [] });setAnswers({});}}><Icon name="close" size={14} /></button>
@@ -1936,15 +2315,15 @@ function Chat({ answers, setAnswers, plan, onScrollToResults }) {
             )}
             </div>
             <div className="freeform">
-              <input className="text-input" placeholder="Or describe your business in your own words…" />
-              <button className="btn ghost sm">Send</button>
+              <input className="text-input" placeholder={tr('Or describe your business in your own words…', 'أو صِف عملك بكلماتك الخاصة…')} />
+              <button className="btn ghost sm">{tr('Send', 'إرسال')}</button>
             </div>
           </div>
         }
 
         {!thinking && step.kind === 'pains' &&
         <div className="msg-input">
-            <div className="anno chip-help">Pick all that apply</div>
+            <div className="anno chip-help">{tr('Pick all that apply', 'اختر كل ما ينطبق')}</div>
             <div className="chip-row">
               {(window.INDUSTRIES[answers.industry]?.pains || []).map((p) =>
             <button key={p.id} className={cls('chip-lg', draft.pains.includes(p.id) && 'on')} onClick={() => togglePain(p.id)}>
@@ -1954,9 +2333,9 @@ function Chat({ answers, setAnswers, plan, onScrollToResults }) {
             )}
             </div>
             <div className="row-actions">
-              <button className="btn ghost sm" onClick={() => editAt(0)}>← Change industry</button>
+              <button className="btn ghost sm" onClick={() => editAt(0)}>{tr('← Change industry', '→ تغيير القطاع')}</button>
               <button className="btn primary" disabled={draft.pains.length === 0} onClick={() => advance({ pains: draft.pains })}>
-                Continue <Icon name="arrow" size={14} />
+                {tr('Continue', 'متابعة')} <Icon name="arrow" size={14} />
               </button>
             </div>
           </div>
@@ -1964,7 +2343,7 @@ function Chat({ answers, setAnswers, plan, onScrollToResults }) {
 
         {!thinking && step.kind === 'channels' &&
         <div className="msg-input">
-            <div className="anno chip-help">Pick all that apply</div>
+            <div className="anno chip-help">{tr('Pick all that apply', 'اختر كل ما ينطبق')}</div>
             <div className="chip-row">
               {(window.INDUSTRIES[answers.industry]?.channels || []).map((ch) =>
             <button key={ch} className={cls('chip-lg compact', draft.channels.includes(ch) && 'on')} onClick={() => toggleChannel(ch)}>
@@ -1974,9 +2353,9 @@ function Chat({ answers, setAnswers, plan, onScrollToResults }) {
             )}
             </div>
             <div className="row-actions">
-              <button className="btn ghost sm" onClick={() => editAt(1)}>← Back</button>
+              <button className="btn ghost sm" onClick={() => editAt(1)}>{tr('← Back', '→ رجوع')}</button>
               <button className="btn primary" disabled={draft.channels.length === 0} onClick={() => advance({ channels: draft.channels })}>
-                Continue <Icon name="arrow" size={14} />
+                {tr('Continue', 'متابعة')} <Icon name="arrow" size={14} />
               </button>
             </div>
           </div>
@@ -1992,7 +2371,7 @@ function Chat({ answers, setAnswers, plan, onScrollToResults }) {
             )}
             </div>
             <div className="row-actions">
-              <button className="btn ghost sm" onClick={() => editAt(2)}>← Back</button>
+              <button className="btn ghost sm" onClick={() => editAt(2)}>{tr('← Back', '→ رجوع')}</button>
             </div>
           </div>
         }
@@ -2002,12 +2381,12 @@ function Chat({ answers, setAnswers, plan, onScrollToResults }) {
             <div className="done-card">
               <div className="done-head">
                 <Icon name="check" size={16} />
-                <b>Your plan is ready.</b>
+                <b>{tr('Your plan is ready.', 'خطتك جاهزة.')}</b>
               </div>
-              <p>Below: your AI team, one workflow walked through end to end, the impact, and the tools we'd plug into. Edit anything above to rebuild.</p>
+              <p>{tr("Below: your AI team, one workflow walked through end to end, the impact, and the tools we'd plug into. Edit anything above to rebuild.", 'في الأسفل: فريق الذكاء الاصطناعي، وسير عمل واحد مشروح من البداية إلى النهاية، والأثر، والأدوات التي سنوصّلها. عدّل أي شيء في الأعلى لإعادة البناء.')}</p>
               <div className="row-actions">
-                <button className="btn primary" onClick={onScrollToResults}>See the plan ↓</button>
-                <button className="btn ghost sm" onClick={() => {setStepIdx(0);setDraft({ pains: [], channels: [] });setAnswers({});}}>Start over</button>
+                <button className="btn primary" onClick={onScrollToResults}>{tr('See the plan ↓', 'شاهد الخطة ↓')}</button>
+                <button className="btn ghost sm" onClick={() => {setStepIdx(0);setDraft({ pains: [], channels: [] });setAnswers({});}}>{tr('Start over', 'البدء من جديد')}</button>
               </div>
             </div>
           </div>
@@ -2030,7 +2409,7 @@ function renderUserAnswer(step, answers) {
   }
   if (step.kind === 'team' && answers.teamSize) {
     const t = window.TEAM_SIZES.find((x) => x.id === answers.teamSize);
-    return `${t.label} people`;
+    return tr(`${t.label} people`, `${t.label} أشخاص`);
   }
   return null;
 }
@@ -2042,13 +2421,14 @@ function aiFollowup(step, answers, plan) {
   }
   if (step.kind === 'pains' && answers.pains?.length) {
     const n = answers.pains.length;
-    return `Common pattern. We see this with most ${window.INDUSTRIES[answers.industry].name.toLowerCase()}s we work with in the UAE.`;
+    const nm = window.INDUSTRIES[answers.industry].name;
+    return tr(`Common pattern. We see this with most ${nm.toLowerCase()}s we work with in the UAE.`, `نمط شائع. نراه مع معظم ${nm} التي نعمل معها في الإمارات.`);
   }
   if (step.kind === 'channels' && answers.channels?.length) {
     const wa = answers.channels.includes('whatsapp');
     return wa ?
-    'WhatsApp. That\'s where things actually happen here. Noted.' :
-    'Understood. We\'ll build around those.';
+    tr('WhatsApp. That\'s where things actually happen here. Noted.', 'واتساب. هناك تحدث الأمور فعلاً. دوّنت ذلك.') :
+    tr('Understood. We\'ll build around those.', 'فهمت. سنبني حول هذه القنوات.');
   }
   return null;
 }
@@ -2057,7 +2437,7 @@ function Message({ m, answers, plan, onEdit }) {
   if (m.kind === 'done') return null;
   return (
     <div className={cls('msg', m.role, m.soft && 'soft')}>
-      <span className="role">{m.role === 'ai' ? 'AI' : 'You'}</span>
+      <span className="role">{m.role === 'ai' ? 'AI' : tr('You', 'أنت')}</span>
       <div className="body">{m.body}</div>
     </div>);
 
@@ -2075,7 +2455,7 @@ function PlanRail({ plan, answers, onEditStep }) {
       <div className="rail-head">
         <div className="rail-title">
           <Icon name="sparkle" size={14} />
-          <span>Your AI plan</span>
+          <span>{tr('Your AI plan', 'خطة الذكاء الاصطناعي')}</span>
         </div>
         <div className="rail-meter">
           <div className="bar"><div className="fill" style={{ width: (plan.completion || 0) + '%' }} /></div>
@@ -2084,18 +2464,18 @@ function PlanRail({ plan, answers, onEditStep }) {
       </div>
 
       <div className="rail-body">
-        <RailRow label="Business" icon="user" filled={!!answers.industry} onEdit={() => onEditStep(0)}>
+        <RailRow label={tr('Business', 'النشاط')} icon="user" filled={!!answers.industry} onEdit={() => onEditStep(0)}>
           {answers.industry ?
           <>
                 <span className="rail-val">{window.INDUSTRIES[answers.industry].name}</span>
-                {answers.teamSize && <span className="rail-sub">{window.TEAM_SIZES.find((t) => t.id === answers.teamSize)?.label} people</span>}
+                {answers.teamSize && <span className="rail-sub">{tr(window.TEAM_SIZES.find((t) => t.id === answers.teamSize)?.label + ' people', window.TEAM_SIZES.find((t) => t.id === answers.teamSize)?.label + ' أشخاص')}</span>}
               </> :
-          <span className="rail-empty">not set</span>}
+          <span className="rail-empty">{tr('not set', 'غير محدّد')}</span>}
         </RailRow>
 
-        <RailRow label="Pain points" icon="target" filled={(answers.pains || []).length > 0} onEdit={() => onEditStep(1)}>
+        <RailRow label={tr('Pain points', 'نقاط الألم')} icon="target" filled={(answers.pains || []).length > 0} onEdit={() => onEditStep(1)}>
           {(answers.pains || []).length === 0 ?
-          <span className="rail-empty">not set</span> :
+          <span className="rail-empty">{tr('not set', 'غير محدّد')}</span> :
           <div className="rail-tags">
                 {answers.pains.map((p) => {
               const ind = window.INDUSTRIES[answers.industry];
@@ -2105,9 +2485,9 @@ function PlanRail({ plan, answers, onEditStep }) {
               </div>}
         </RailRow>
 
-        <RailRow label="Channels" icon="chat" filled={(answers.channels || []).length > 0} onEdit={() => onEditStep(2)}>
+        <RailRow label={tr('Channels', 'القنوات')} icon="chat" filled={(answers.channels || []).length > 0} onEdit={() => onEditStep(2)}>
           {(answers.channels || []).length === 0 ?
-          <span className="rail-empty">not set</span> :
+          <span className="rail-empty">{tr('not set', 'غير محدّد')}</span> :
           <div className="rail-tags">
                 {answers.channels.map((c) => <span key={c} className="rail-tag">{window.CHANNEL_LABELS[c] || c}</span>)}
               </div>}
@@ -2115,41 +2495,41 @@ function PlanRail({ plan, answers, onEditStep }) {
 
         <div className="rail-divider" />
 
-        <RailRow label="Recommended team" icon="ai" filled={plan.ready} dynamic>
+        <RailRow label={tr('Recommended team', 'الفريق الموصى به')} icon="ai" filled={plan.ready} dynamic>
           {!plan.ready ?
-          <span className="rail-empty">building…</span> :
+          <span className="rail-empty">{tr('building…', 'قيد الإنشاء…')}</span> :
           <ul className="rail-list">
                 {plan.automations.map((a) =>
             <li key={a.id}>
                     <span className="rail-dot" />
                     <div>
                       <b>{a.title}</b>
-                      <span className="rail-sub">{a.role}</span>
+                      <span className="rail-sub">{tr(a.role, a.role === 'AI assistant' ? 'مساعد ذكاء اصطناعي' : 'أتمتة')}</span>
                     </div>
                   </li>
             )}
               </ul>}
         </RailRow>
 
-        <RailRow label="Tools connected" icon="layers" filled={plan.ready} dynamic>
+        <RailRow label={tr('Tools connected', 'الأدوات المتّصلة')} icon="layers" filled={plan.ready} dynamic>
           {!plan.ready ?
-          <span className="rail-empty">building…</span> :
+          <span className="rail-empty">{tr('building…', 'قيد الإنشاء…')}</span> :
           <div className="rail-integ">
                 {plan.integrations.slice(0, 8).map((i) =>
             <span key={i} className="rail-integ-tile" title={window.INTEGRATIONS[i]?.label}>
-                    {window.INTEGRATIONS[i]?.tag || '?'}
+                    {window.__Brand ? window.__Brand({ k: i, tag: window.INTEGRATIONS[i]?.tag || '?', size: 16 }) : (window.INTEGRATIONS[i]?.tag || '?')}
                   </span>
             )}
               </div>}
         </RailRow>
 
-        <RailRow label="Operational impact" icon="chart" filled={plan.ready} dynamic highlight>
+        <RailRow label={tr('Operational impact', 'الأثر التشغيلي')} icon="chart" filled={plan.ready} dynamic highlight>
           {!plan.ready ?
-          <span className="rail-empty">building…</span> :
+          <span className="rail-empty">{tr('building…', 'قيد الإنشاء…')}</span> :
           <div className="rail-impact">
-                <div className="impact-row"><b className="impact-num">{plan.hours}h</b><span className="anno">a week saved</span></div>
-                <div className="impact-row"><b className="impact-num">&lt; 30s</b><span className="anno">reply, any hour</span></div>
-                <div className="impact-row"><b className="impact-num">~{plan.missedLeads}</b><span className="anno">messages / mo captured</span></div>
+                <div className="impact-row"><b className="impact-num">{plan.hours}h</b><span className="anno">{tr('a week saved', 'أسبوعياً موفّرة')}</span></div>
+                <div className="impact-row"><b className="impact-num">&lt; 30s</b><span className="anno">{tr('reply, any hour', 'رد، في أي ساعة')}</span></div>
+                <div className="impact-row"><b className="impact-num">~{plan.missedLeads}</b><span className="anno">{tr('messages / mo captured', 'رسالة / شهرياً تُلتقط')}</span></div>
               </div>}
         </RailRow>
       </div>
@@ -2157,14 +2537,14 @@ function PlanRail({ plan, answers, onEditStep }) {
       <div className="rail-foot">
         <button className="btn primary full" disabled={!plan.ready}>
           <Icon name="save" size={14} />
-          Send my plan
+          {tr('Send my plan', 'أرسل خطتي')}
         </button>
         <div className="row-actions">
-          <button className="btn ghost sm half" disabled={!plan.ready}><Icon name="mail" size={12} />Email</button>
-          <button className="btn ghost sm half" disabled={!plan.ready}><Icon name="phone" size={12} />Call</button>
+          <button className="btn ghost sm half" disabled={!plan.ready}><Icon name="mail" size={12} />{tr('Email', 'بريد')}</button>
+          <button className="btn ghost sm half" disabled={!plan.ready}><Icon name="phone" size={12} />{tr('Call', 'اتصال')}</button>
         </div>
         <div className="rail-foot-anno anno">
-          Your plan lives at <span className="mono">lektrony.ae/plan/x9k2</span>
+          {tr('Your plan lives at ', 'خطتك متاحة على ')}<span className="mono">lektrony.ae/plan/x9k2</span>
         </div>
       </div>
     </aside>);
@@ -2178,7 +2558,7 @@ function RailRow({ label, icon, children, filled, dynamic, onEdit, highlight }) 
         <div className="rail-row-label">
           <Icon name={icon} size={12} />
           <span className="anno">{label}</span>
-          {dynamic && filled && <span className="dyn-pill">live</span>}
+          {dynamic && filled && <span className="dyn-pill">{tr('live', 'مباشر')}</span>}
         </div>
         {onEdit && filled && <button className="rail-edit" onClick={onEdit}><Icon name="edit" size={12} /></button>}
       </div>
@@ -2243,7 +2623,7 @@ function TypewriterTitle({ text, speed = 55, startDelay = 300 }) {
 
   return (
     <h1 className="hero-title" aria-label={text}>
-      <span className="typed" aria-hidden="true" style={{ fontSize: "64px" }}>{text.slice(0, n)}</span>
+      <span className="typed" aria-hidden="true">{text.slice(0, n)}</span>
       <span className="typer-cursor" aria-hidden="true" />
     </h1>);
 
@@ -2255,27 +2635,25 @@ function Hero({ plan, answers, setAnswers, onScrollToResults }) {
       <div className="hero-copy">
         <div className="eyebrow">
           <span className="eyebrow-spark"><Icon name="spark" size={12} /></span>
-          <span>AI Operations Consultancy · UAE</span>
+          <span>{tr('AI Operations Consultancy · UAE', 'استشارات عمليات الذكاء الاصطناعي · الإمارات')}</span>
         </div>
-        <TypewriterTitle text="Tell us about your business" />
-        <p className="hero-sub">We'll map the AI team it needs.</p>
+        <TypewriterTitle text={tr('Tell us about your business', 'أخبرنا عن عملك')} />
+        <p className="hero-sub">{tr("We'll map the AI team it needs.", 'وسنرسم فريق الذكاء الاصطناعي الذي يحتاجه.')}</p>
         <p className="lede">
-          A short conversation. Four questions. By the end you'll have a plan:
-          your AI team, the work it takes over, the tools it plugs into,
-          and what changes day to day.
+          {tr("A short conversation. Four questions. By the end you'll have a plan: your AI team, the work it takes over, the tools it plugs into, and what changes day to day.", 'محادثة قصيرة. أربعة أسئلة. في النهاية ستحصل على خطة: فريق الذكاء الاصطناعي لديك، والعمل الذي يتولّاه، والأدوات التي يتكامل معها، وما الذي يتغيّر يومياً.')}
         </p>
         <div className="hero-meta">
           <span className="metabit">
             <span className="metabit-icon"><Icon name="pin" size={18} /></span>
-            <span className="metabit-text">Based in Abu Dhabi</span>
+            <span className="metabit-text">{tr('Based in Abu Dhabi', 'مقرّنا أبوظبي')}</span>
           </span>
           <span className="metabit">
             <span className="metabit-icon"><Icon name="cal" size={18} /></span>
-            <span className="metabit-text">Live in 1 month</span>
+            <span className="metabit-text">{tr('Live in 1 month', 'جاهز خلال شهر')}</span>
           </span>
           <span className="metabit">
             <span className="metabit-icon"><Icon name="shield" size={18} /></span>
-            <span className="metabit-text">No commitment to talk</span>
+            <span className="metabit-text">{tr('No commitment to talk', 'لا التزام للتحدّث')}</span>
           </span>
         </div>
       </div>
